@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <id>com.studiomelonpie.FoundationTest</id>
+    <name>FoundationTest</name>
+    <version>1.0</version>
+    <publisher>not specified</publisher>
+    <url>not specified</url>
+    <description>not specified</description>
+    <copyright>not specified</copyright>
+    <icon>appicon.png</icon>
+    <persistent-wifi>false</persistent-wifi>
+    <prerendered-icon>false</prerendered-icon>
+    <statusbar-style>default</statusbar-style>
+    <statusbar-hidden>false</statusbar-hidden>
+    <fullscreen>false</fullscreen>
+    <navbar-hidden>false</navbar-hidden>
+    <analytics>true</analytics>
+    <guid></guid>
+</ti:app>
