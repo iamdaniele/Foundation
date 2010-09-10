@@ -1,10 +1,4 @@
 /**
- * Your app's namespace. Extend this object to have its properties and methods cross-referenced across all
- * the execution contexts.
- */
-var app = {};
-
-/**
  * Microframework to make a Titanium developer life's easier.
  * @class
  */
@@ -61,19 +55,27 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 *						fetch the file that contains the view's code. To comply to Foundation's naming
 	 * 						conventions, any space will be trimmed. So, if your window title is “Apples and 
 	 *						Oranges”, this method will fetch the file ApplesAndOranges.js.
+	 *						Specify viewless: true to create a window without loading its relative file.
 	 * @param {string} params The configuration options, same as Titanium's parameters.
 	 * @return {Ti.UI.Window} A Window instance
 	 */
 	createWindow: function(name, params) {
+		
+		params = params || {};
 
 		var config = Foundation.UI.windowConfig[name] = {
 			title: name,
 			backgroundColor: '#fff',
 			url: 'Views/' + name.replace(/ /g, '') + '.js'
 		};
-				
+
 		if(params) {
 			config = Foundation.augment(config, params);
+		}
+		
+		if(config.viewless) {
+			delete config.url;
+			delete Foundation.UI.windowConfig[name].url;
 		}
 		
 		Foundation.Windows[name] = Ti.UI.createWindow(config);	
@@ -172,3 +174,11 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 */
 	tabGroup: function() { return Foundation.TabGroup; }
 };
+
+Ti.include('Foundation/Storage.js');
+
+/**
+ * Your app's namespace. Extend this object to have its properties and methods cross-referenced across all
+ * the execution contexts.
+ */
+var app = {foundation: Foundation};
