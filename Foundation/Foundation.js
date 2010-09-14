@@ -156,8 +156,17 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		
 		var options = {
 			title: name,
-			backgroundColor: '#fff'
+			backgroundColor: '#444'
 		};
+
+		var icon = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/Images/' + name.replace(/ /g, '') + '.png');
+
+		if(icon.exists()) {
+			options.icon = icon.nativePath;
+		}
+		else {
+			options.icon = 'Images/FoundationGenericTab.png';
+		}
 
 		tabOptions = Foundation.augment(options, tabOptions);
 		tabOptions.window = tabOptions.window || Foundation.Windows[name];
