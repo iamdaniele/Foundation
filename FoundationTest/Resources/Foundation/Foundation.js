@@ -11,7 +11,9 @@ var Foundation = /** @lends Foundation# */ {
 		ANDROID: 'Android',
 		isIOS: function() {return Ti.Platform.name == 'iPhone OS' },
 		isAndroid: function() {return Ti.Platform.name == 'Android'}
-	}
+	},
+	isArray: function(a) {return a.constructor && a.constructor.prototype && a.constructor.prototype == Array.prototype},
+	isObject: function(a) {return a.constructor && a.constructor.prototype && a.constructor.prototype == Object.prototype}
 };
 
 /**
@@ -131,6 +133,9 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	/**
 	 * Creates a new tab and appends it to the tab group. For the moment only one tab group is allowed in a
 	 * Foundation application, so it will be automatically created if needed.
+	 * If you have an icon for your tab, rename it to your tab/main window name (without spaces, i.e.
+	 * "SampleTab.png" for a tab called "Sample Tab"). If you don't have a custom icon, Foundation will use its
+	 * default. Only PNG icons are supported.
 	 *
 	 * @param {string} name	The name to assign to the window. It will be used for internal reference and to
 	 *						fetch the file that contains the views's code.
@@ -185,6 +190,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 };
 
 Ti.include('Foundation/Storage.js');
+Ti.include('Foundation/Request.js');
 
 /**
  * Your app's namespace. Extend this object to have its properties and methods cross-referenced across all
