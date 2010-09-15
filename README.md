@@ -14,6 +14,7 @@ What's coming
 =============
 
 *    The ability to have platform-specific views (e.g., in an Android's Tab view, position the leftNavButton and rightNavButton somewhere else).
+*    The ability to package an Universal App (that is, a single build that fits both iPhone and iPad)
 *    Documentation build (for now, just inline doclets you can build yourself using [jsdoc-toolkit](http://code.google.com/p/jsdoc-toolkit/)).
 
 License
