@@ -11,9 +11,7 @@ var Foundation = /** @lends Foundation# */ {
 		ANDROID: 'Android',
 		isIOS: function() {return Ti.Platform.name == 'iPhone OS' },
 		isAndroid: function() {return Ti.Platform.name == 'Android'}
-	},
-	isArray: function(a) {return a.constructor && a.constructor.prototype && a.constructor.prototype == Array.prototype},
-	isObject: function(a) {return a.constructor && a.constructor.prototype && a.constructor.prototype == Object.prototype}
+	}
 };
 
 /**
@@ -57,8 +55,10 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 *						fetch the file that contains the view's code. To comply to Foundation's naming
 	 * 						conventions, any space will be trimmed. So, if your window title is “Apples and 
 	 *						Oranges”, this method will fetch the file ApplesAndOranges.js.
-	 *						Specify viewless: true to create a window without loading its relative file.
 	 * @param {string} params The configuration options, same as Titanium's parameters.
+	 * @param {boolean} [params.viewless] true to create a window without loading its relative file
+	 * @param {string} [params.file] the file name without path (must be under Resources/Views) that contains
+     *								 the code for this window
 	 * @return {Ti.UI.Window} A Window instance
 	 */
 	createWindow: function(name, params) {
@@ -68,7 +68,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		var config = Foundation.UI.windowConfig[name] = {
 			title: name,
 			backgroundColor: '#fff',
-			url: 'Views/' + name.replace(/ /g, '') + '.js'
+			url: 'Views/' + (params.file || name.replace(/ /g, '') + '.js')
 		};
 
 		if(params) {
@@ -85,6 +85,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		// append instance strictly *after* creating the window,
 		// otherwise will crash
 		Foundation.Windows[name].app = app;
+		Foundation.Windows[name].id = name;
 		Foundation.Windows[name].f = Foundation.Windows[name].foundation = Foundation;
 
 		return Foundation.Windows[name];
@@ -133,14 +134,11 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	/**
 	 * Creates a new tab and appends it to the tab group. For the moment only one tab group is allowed in a
 	 * Foundation application, so it will be automatically created if needed.
-	 * If you have an icon for your tab, rename it to your tab/main window name (without spaces, i.e.
-	 * "SampleTab.png" for a tab called "Sample Tab"). If you don't have a custom icon, Foundation will use its
-	 * default. Only PNG icons are supported.
 	 *
 	 * @param {string} name	The name to assign to the window. It will be used for internal reference and to
 	 *						fetch the file that contains the views's code.
-	 * @param {object} [windowOptions] A dictionary of properties as Ti.UI.createTab would expect
-	 * @param {object} [options] A dictionary of properties as Ti.UI.createWindow would expect
+	 * @param {object} [tabOptions] A dictionary of properties as Ti.UI.createTab would expect
+	 * @param {object} [winOptions] A dictionary of properties as Foundation.UI.createWindow would expect
 	 * @return {Ti.UI.Tab} The tab
 	 */
 	createTab: function(name, tabOptions, winOptions) {
@@ -177,6 +175,8 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		tabOptions.window = tabOptions.window || Foundation.Windows[name];
 		
 		Foundation.Tabs[name] = Ti.UI.createTab(tabOptions);
+		Foundation.Tabs[name].id = name;
+		Foundation.Tabs[name].mainWindowId = name;
 		Foundation.TabGroup.addTab(Foundation.Tabs[name]);
 		
 		return Foundation.Tabs[name];
@@ -190,7 +190,6 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 };
 
 Ti.include('Foundation/Storage.js');
-Ti.include('Foundation/Request.js');
 
 /**
  * Your app's namespace. Extend this object to have its properties and methods cross-referenced across all
