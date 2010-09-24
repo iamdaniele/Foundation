@@ -1,30 +1,59 @@
 /**
- * Provides local, memory-based runtime storage.
- * 
- * This class allows you to store key/value pairs of data. You can attach whatever type of data you need (such as object literals, JSON data,
- * object references and so on), and assign it to a key. It is very trivial for the moment, i.e. it is a basic getter/setter object, but
- * it should grow to provide a generic interface that can be used to made different types of storage (Titanium DB storage, localStorage etc.).
- * Currently the data is stored into your device's memory, so it makes this module suitable for runtime storage/caching.
- *
- * @class
+ * Dictionary-based storage for runtime data.
  */
 Foundation.Storage = /** @lends Foundation.Storage# */{
 	data: {},
 	/**
-	 * Get an item from the storage.
-	 * @param {string} key The key
-	 * @return {mixed} The value or null if the value is not present
+	 * Gets one or more values safely.
+	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
+	 *					   provide a regex that will delete all the matching keys.
+	 * @param {boolean} [includeKey=false] True to return an object with two properties: key (the key for this value)
+	 *                  and value (the value).
+	 * @return {mixed} If you provided a string key:
+	 * 				<ul>
+	 *					<li>If the key is present, the value will be returned.</li>
+	 *					<li>If the key is present and includeKey is true, an object will be returned (see the description
+	 *                  for includeKey).</li>
+	 *					<li>If the key is not present, null will be returned.</li>
+	 *				</ul>
+	 *				If you provided a regex:
+	 * 				<ul>
+	 *					<li>If the regex matches one or more keys, an array of values will be returned.</li>
+	 *					<li>If the regex matches one or more keys and includeKey is true, an array of objects
+	 *                  will be returned (see the description for includeKey).</li>
+	 *					<li>If the regex doesn't match any key, an empty array will be returned.</li>
+	 *				</ul>
 	 */
-	get: function(key) {
-		return Foundation.Storage.data[key] || null;
+	get: function(key, includeKey) {
+		if(key instanceof RegExp) {
+			var o = [];
+			for(var i in Foundation.Storage.data) {
+				if(key.test(i)) {
+					if(includeKey) {
+						o.push({key: i, value: Foundation.Storage.data[i]});
+					}
+					else {
+						o.push(Foundation.Storage.data[i]);						
+					}
+				}
+			}
+			
+			return o;
+		}
+		else {
+			if(Foundation.Storage.data[key]) {
+				if(includeKey) return {key: key, value: Foundation.Storage.data[key]};
+				else return Foundation.Storage.data[key];
+				
+			}
+			else return null;
+		}
 	},
 	
 	/**
-	 * Stores the specified value as a key. It the key doesn't exist it will be created, otherwise the existing value will be
-	 * overwritten.
+	 * Sets a value.
 	 * @param {string} key The key
-	 * @param {mixed} value The value to store
-	 * @return {mixed} The stored value
+	 * @param {mixed} value The value
 	 */
 	set: function(key, value) {
 		Foundation.Storage.data[key] = value;
@@ -32,22 +61,23 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 	},
 	
 	/**
-	 * Deletes a value from the dictionary.
-	 * @param {string} key The key
-	 * @return {mixed} The value deleted or null if no data was found.
+	 *	@param {mixed} key The key to remove. If string, the key will be removed, if present. You can
+	 *					   provide a regex that will delete all the matching keys.
 	 */
 	remove: function(key) {
-		value = null;
-		if(Foundation.Storage.data[key]) {
+		if(key instanceof RegExp) {
+			for(var i in Foundation.Storage.data) {
+				if(key.test(i)) {
+					delete Foundation.Storage.data[i];
+				}
+			}
+		}
+		else if(Foundation.Storage.data[key]) {
 			value = Foundation.Storage.data[key];
 			delete Foundation.Storage.data[key];
-		}
-		return value;
+		}	
 	},
 	
-	/**
-	 * Wipes the entire dictionary.
-	 */
 	reset: function() {
 		Foundation.Storage.data = {};
 	}
