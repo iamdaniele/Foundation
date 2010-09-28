@@ -2,7 +2,20 @@
  * Dictionary-based storage for runtime data.
  */
 Foundation.Storage = /** @lends Foundation.Storage# */{
-	data: {},
+
+	/**
+	 * @name Foundation.Storage#change
+	 * @event
+	 * @param {string} type The type of event. It can be 'set' (value added for the first time or changed) or 'remove'
+	 *						(value no longer present into Storage).
+	 * @param {string} keySelector The registered key listered that triggered the event (e.g. /^SomeExampleKey[0-9]+/).
+	 *						       Note that both RegExp and string key listeners will be passed as strings here.
+	 * @param {string} key The key of the element for which the event was triggered (e.g 'SomeExampleKey1234')
+	 */
+	
+	_data: {},
+	_watch: {},
+
 	/**
 	 * Gets one or more values safely.
 	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
@@ -27,13 +40,13 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 	get: function(key, includeKey) {
 		if(key instanceof RegExp) {
 			var o = [];
-			for(var i in Foundation.Storage.data) {
+			for(var i in Foundation.Storage._data) {
 				if(key.test(i)) {
 					if(includeKey) {
-						o.push({key: i, value: Foundation.Storage.data[i]});
+						o.push({key: i, value: Foundation.Storage._data[i]});
 					}
 					else {
-						o.push(Foundation.Storage.data[i]);						
+						o.push(Foundation.Storage._data[i]);						
 					}
 				}
 			}
@@ -41,9 +54,9 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 			return o;
 		}
 		else {
-			if(Foundation.Storage.data[key]) {
-				if(includeKey) return {key: key, value: Foundation.Storage.data[key]};
-				else return Foundation.Storage.data[key];
+			if(Foundation.Storage._data[key]) {
+				if(includeKey) return {key: key, value: Foundation.Storage._data[key]};
+				else return Foundation.Storage._data[key];
 				
 			}
 			else return null;
@@ -56,29 +69,76 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 	 * @param {mixed} value The value
 	 */
 	set: function(key, value) {
-		Foundation.Storage.data[key] = value;
-		return Foundation.Storage.data[key];
+		Foundation.Storage._data[key] = value;
+		
+		Foundation.Storage.checkWatchKey(key, value, 'set');
+		
+		return Foundation.Storage._data[key];
 	},
-	
+		
 	/**
 	 *	@param {mixed} key The key to remove. If string, the key will be removed, if present. You can
 	 *					   provide a regex that will delete all the matching keys.
 	 */
 	remove: function(key) {
 		if(key instanceof RegExp) {
-			for(var i in Foundation.Storage.data) {
+			for(var i in Foundation.Storage._data) {
 				if(key.test(i)) {
-					delete Foundation.Storage.data[i];
+					delete Foundation.Storage._data[i];
+					
+					Foundation.Storage.checkWatchKey(i, null, 'remove');
 				}
 			}
 		}
-		else if(Foundation.Storage.data[key]) {
-			value = Foundation.Storage.data[key];
-			delete Foundation.Storage.data[key];
+		else if(Foundation.Storage._data[key]) {
+			value = Foundation.Storage._data[key];
+			delete Foundation.Storage._data[key];
+			
+			Foundation.Storage.checkWatchKey(key, null, 'remove');
+			
 		}	
 	},
 	
-	reset: function() {
-		Foundation.Storage.data = {};
+	/**
+	 * Wipes the storage.
+	 * @param {boolean} [alsoResetKeyListeners=false] Removes all the key listeners.
+	 */
+	reset: function(alsoResetKeyListeners) {
+		Foundation.Storage._data = {};
+
+		if(alsoResetKeyListeners) {
+			Foundation.Storage._watch = {};
+		}
+	},
+	
+	/**
+	 * Attaches a key listener.
+     * Every time that a value corresponding to the specified key is changed (that is, set or removed), a Foundation.Storage.change
+	 * event is fired (through Ti.App.fireEvent), so you can attach events and perform actions on change.
+	 * @param {string|RegExp} key The key to watch
+	 *
+	 */
+	watch: function(key) {
+		Foundation.Storage._watch[key.toString()] = key;
+	},
+
+	/**
+	 * Removes a key listener.
+	 * @param {string|RegExp} key The key to remove
+	 */
+	unwatch: function(key) {
+		delete Foundation.Storage._watch[key.toString()];
+	},
+	
+	checkWatchKey: function(srcKey, value, type) {
+		for(var key in Foundation.Storage._watch) {
+			
+			if(Foundation.Storage._watch[key] instanceof RegExp && Foundation.Storage._watch[key].test(srcKey)) {
+				Ti.App.fireEvent('Foundation.Storage.change', {type:type, keySelector: key.toString(), key:srcKey, value: value});					
+			}			
+			else if(Foundation.Storage._watch[key] == srcKey) {
+				Ti.App.fireEvent('Foundation.Storage.change', {type:type, keySelector: key.toString(), key:srcKey, value: value});					
+			}
+		}
 	}
 };

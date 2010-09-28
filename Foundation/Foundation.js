@@ -9,8 +9,8 @@ var Foundation = /** @lends Foundation# */ {
 	Platform:{
 		IOS: 'iPhone OS',
 		ANDROID: 'Android',
-		isIOS: function() {return Ti.Platform.name == 'iPhone OS' },
-		isAndroid: function() {return Ti.Platform.name == 'Android'}
+		isIOS: function() {return Ti.Platform.name == Foundation.Platform.IOS; },
+		isAndroid: function() {return Ti.Platform.name == Foundation.Platform.ANDROID; }
 	}
 };
 
@@ -39,7 +39,7 @@ Foundation.augment = function() {
 	}
 	
 	return base;
-}
+};
 
 /**
  * Provides interaction with tabs and windows.
@@ -189,10 +189,12 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	tabGroup: function() { return Foundation.TabGroup; }
 };
 
+Ti.include('Foundation/Request.js');
 Ti.include('Foundation/Storage.js');
 
 /**
- * Your app's namespace. Extend this object to have its properties and methods cross-referenced across all
- * the execution contexts.
+ * Your app's namespace. Extend this object to have its properties and methods referenced across all
+ * the execution contexts. The namespace is prefilled with the foundation namespace, so you can avail
+ * it from within your view.
  */
 var app = {foundation: Foundation};

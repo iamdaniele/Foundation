@@ -74,24 +74,25 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 		
 		if(options.jsonpCallback) {
 			if(options.jsonpCallback === true) {
-				jsonp = '?callback=' + Foundation.Request.CALLBACK_NAME;
+				jsonp = 'callback=' + Foundation.Request.CALLBACK_NAME;
 			}
 			else if(typeof options.jsonpCallback == 'string') {
-				jsonp = '?callback=' + options.jsonpCallback;
+				jsonp = 'callback=' + options.jsonpCallback;
 			}
 		}
 				
 		type = type || 'GET';
+		
 		var req = Ti.Network.createHTTPClient();
 		
-		req.open(type, url + jsonp);
+		req.open(type, url + (jsonp != '' ? '?' : '') + jsonp);
 
 		if(options.authentication) {
 			req.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode(user+':'+pass));			
 		}
 
 		// Proxy for HTTPClient.
-		return (function() {
+		return new function FoundationTiHTTPClientProxy() {
 			this.timeout = 0;
 			// wraps the original setTimeout so that I can store the user's timeout
 			this.setTimeout = function(msec) {this.timeout = msec; req.setTimeout(msec);}
@@ -107,18 +108,17 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 				if(data && type.toUpperCase() == 'GET' && typeof data != 'string') {
 					params = [];
 					for(var i in data) {
-						params.push(i + '=' + encodeURIComponent(data[i]));
+						params.push(i + '=' + data[i]);
 					}
-
-					data = '&' + params.join('&');
+					
+					data = (jsonp != '' ? '&' : '') + params.join('&');
 				}
 				
 				// if GET, I need to reconfigure the request because I need to append the query string,
 				// so let's reopen the connection
 				if(type.toUpperCase() == 'GET') {
 					data = data || "";
-					req.open(type, url + jsonp + data);					
-
+					req.open(type, url + (jsonp != '' || data != '' ? '?' : '') + jsonp + data);					
 					if(this.timeout > 0) {
 						req.setTimeout(this.timeout);
 					}
@@ -146,11 +146,17 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 
 				// responseJSON will be available in the function body and hopefully should
 				// contain the response body in JSON format ready to be used
-				this.responseJSON = eval(this.responseText);
+				try {
+					this.responseJSON = JSON.parse(this.responseText);
+				} catch(e) {
+					Ti.API.error('[Foundation.Request.json] Exception while parsing JSON response: ' + e);
+					this.responseJSON = null;
+				}
+
 				self.onload.call(this, arguments);
 			};
 			
 			return this;
-		})();
+		};
 	}
 };
