@@ -1,6 +1,7 @@
 /**
  * Microframework to make a Titanium developer life's easier.
  * @class
+ * @namespace
  */
 var Foundation = /** @lends Foundation# */ {
 	Windows: {},
@@ -43,6 +44,7 @@ Foundation.augment = function() {
 
 /**
  * Provides interaction with tabs and windows.
+ * @class
  */
 Foundation.UI = /** @lends Foundation.UI# */ {
 	
@@ -95,8 +97,8 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * Returns the specified window, if exists.
 	 * @param {string} name	The window name.
 	 * @param {boolean} [withConfig=false] to return a dictionary with the window's current parameters.
-	 * @return {mixed} a Ti.UI.Window object or, if withConfig set to <pre>true</pre>, a dictionary with the
-	 * 					properties <pre>win</pre> (the window instance) and <pre>config</pre> (the window configuration).
+	 * @return {mixed} a Ti.UI.Window object or, if withConfig set to true, a dictionary with the
+	 * 					properties win (the window instance) and config (the window configuration).
 	 */
 	getWindow: function(name, withConfig) {
 		if(Foundation.Windows[name]) {
@@ -193,8 +195,15 @@ Ti.include('Foundation/Request.js');
 Ti.include('Foundation/Storage.js');
 
 /**
- * Your app's namespace. Extend this object to have its properties and methods referenced across all
+ * @namespace Your app's namespace. Extend this object to have its properties and methods referenced across all
  * the execution contexts. The namespace is prefilled with the foundation namespace, so you can avail
  * it from within your view.
+ * This namespace will be available as a window property, which means it will be accessible from Ti.UI.currentWindow.app.
+ * 
  */
-var app = {foundation: Foundation};
+var app = {
+	/**
+	 * Reference to Foundation
+	 */
+	foundation: Foundation
+};

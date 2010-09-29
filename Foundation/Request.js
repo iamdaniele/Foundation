@@ -1,5 +1,6 @@
 /**
  * Performs XHR requests using Ti.Network.HTTPClient.
+ * @class
  */
 Foundation.Request = /** @lends Foundation.Request# */ {
 	Event: {LOAD:'Foundation.Request.Event.LOAD', ERROR: 'Foundation.Request.Event.ERROR'},
@@ -38,7 +39,7 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 	},
 	
 	// This method is executed as callback for a JSONP request
-	callback: function(response) { return response; },
+	callback: function(response) { return JSON.parse(response); },
 	
 	/**
 	 * Prepares a JSON/JSONP request using the specified method.
@@ -59,7 +60,7 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 	 * @param	{String}	[options.pass]	Password for HTTP basic authentication
 	 * @param	{Boolean}	[options.authentication=false] Enables or disabled basic authentication for the current request.
 	 *									If true, you must provide username and password.
-	 * @param	{Boolean|String} [options.jsonCallback] True to use Foundation's internal callback. You can provide a function name
+	 * @param	{Boolean|String} [options.jsonCallback] True to use Foundation's internal callback (Foundation.Request.callback). You can provide a function name
 	 *									if you need a different callback. The function must accept the response body as parameter.
 	 * @return {Object}					A proxy to Ti's HTTPClient. You should expect to use the same entry points as it.
 	 */
