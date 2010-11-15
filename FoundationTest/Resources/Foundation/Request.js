@@ -1,43 +1,16 @@
 /**
  * Performs XHR requests using Ti.Network.HTTPClient.
+ * @class
  */
 Foundation.Request = /** @lends Foundation.Request# */ {
 	Event: {LOAD:'Foundation.Request.Event.LOAD', ERROR: 'Foundation.Request.Event.ERROR'},
 	CALLBACK_NAME: 'Foundation.Request.callback',
+	CALLBACK_KEY: 'callback',
 		
-	// converts an object into a querystring
-	serialize: function(params, string, parent) {
-		string = string || '';
-		parent = parent || '';
-
-		// is array
-		for(var i in params) {
-			if(Foundation.isArray(params[i])) {
-				string = Foundation.Request.serialize(params[i], string, parent != '' ? '['+i+'][]': i + '[]') + '&';
-			}
-			else if(Foundation.isObject(params[i])) {
-				string = Foundation.Request.serialize(params[i], string, parent != '' ? '['+i+']': i) + '&';
-			}
-			else {
-				var p = "";
-				if(isNaN(i)) {
-					p = parent != '' ? parent + '['+i+']' : i;
-				}
-				else {
-					p = parent;
-				}
-				
-				p += '=';
-				string += p + params[i] + '&';				
-			}
-
-		}
-
-		string = string.replace(/\&$/,'');
-		return encodeURIComponent(string);
-	},
-	
 	// This method is executed as callback for a JSONP request
+	// switch methods when 1.5.0 fixes the object cast bug
+	
+	// callback: function(response) { return JSON.parse(response); },
 	callback: function(response) { return response; },
 	
 	/**
@@ -57,10 +30,11 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 	 * @param	{Object}	[options]		A dictionary of options specific to Foundation.Request
 	 * @param	{String}	[options.user]	Username for HTTP basic authentication
 	 * @param	{String}	[options.pass]	Password for HTTP basic authentication
-	 * @param	{Boolean}	[options.authentication=false] Enables or disabled basic authentication for the current request.
+	 * @param	{Boolean}	[options.authentication=false] Enables/disables basic HTTP authentication for the current request.
 	 *									If true, you must provide username and password.
-	 * @param	{Boolean|String} [options.jsonCallback] True to use Foundation's internal callback. You can provide a function name
-	 *									if you need a different callback. The function must accept the response body as parameter.
+	 * @param	{String}	[options.jsonpCallbackParam] The callback parameter key.
+	 * @param	{Boolean|String} [options.jsonpCallback] True to use Foundation's internal callback (Foundation.Request.callback). You can provide a function name
+	 *									if you need a different callback. The function will be passed the response body as parameter.
 	 * @return {Object}					A proxy to Ti's HTTPClient. You should expect to use the same entry points as it.
 	 */
 	json: function(url, type, options) {
@@ -71,13 +45,14 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 		var pass = options.pass || "";
 		
 		var jsonp = "";
+		var callbackKey = options.jsonpCallbackParam || Foundation.Request.CALLBACK_KEY;
 		
-		if(options.jsonpCallback) {
-			if(options.jsonpCallback === true) {
-				jsonp = 'callback=' + Foundation.Request.CALLBACK_NAME;
+		if(options.jsonpCallback || options.jsonpCallbackParam) {
+			if(typeof options.jsonpCallback == 'undefined' || options.jsonpCallback === true) {
+				jsonp = callbackKey + '=' + Foundation.Request.CALLBACK_NAME;
 			}
 			else if(typeof options.jsonpCallback == 'string') {
-				jsonp = 'callback=' + options.jsonpCallback;
+				jsonp = callbackKey + '=' + options.jsonpCallback;
 			}
 		}
 				
@@ -147,7 +122,13 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 				// responseJSON will be available in the function body and hopefully should
 				// contain the response body in JSON format ready to be used
 				try {
-					this.responseJSON = JSON.parse(this.responseText);
+					if(jsonp != '') {
+						this.responseJSON = eval(this.responseText);
+					}
+					else {
+						this.responseJSON = JSON.parse(this.responseText);						
+					}
+
 				} catch(e) {
 					Ti.API.error('[Foundation.Request.json] Exception while parsing JSON response: ' + e);
 					this.responseJSON = null;

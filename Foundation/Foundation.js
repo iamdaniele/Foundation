@@ -6,14 +6,18 @@
 var Foundation = /** @lends Foundation# */ {
 	Windows: {},
 	Tabs: {},
-	TabGroup: null,
+	currentTabGroup: null,
+	tabGroupCounter: 0,
+	TabGroups: {},
 	Platform:{
 		IOS: 'iPhone OS',
-		ANDROID: 'Android',
+		ANDROID: 'android',
 		isIOS: function() {return Ti.Platform.name == Foundation.Platform.IOS; },
 		isAndroid: function() {return Ti.Platform.name == Foundation.Platform.ANDROID; }
 	}
 };
+
+Foundation.prefix = Foundation.Platform.isIOS() ? 'app://' : '/';
 
 /**
  * Extends objects (literals). Useful where you need to add properties to an object or to override
@@ -49,6 +53,7 @@ Foundation.augment = function() {
 Foundation.UI = /** @lends Foundation.UI# */ {
 	
 	windowConfig: {},
+	windowTemplate: {},
 	
 	/**
 	 * Creates a new window as you would expect Titanium to do, but appends Foundation and the app namespace
@@ -57,7 +62,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 *						fetch the file that contains the view's code. To comply to Foundation's naming
 	 * 						conventions, any space will be trimmed. So, if your window title is “Apples and 
 	 *						Oranges”, this method will fetch the file ApplesAndOranges.js.
-	 * @param {string} params The configuration options, same as Titanium's parameters.
+	 * @param {object} params The configuration options, same as Titanium's parameters.
 	 * @param {boolean} [params.viewless] true to create a window without loading its relative file
 	 * @param {string} [params.file] the file name without path (must be under Resources/Views) that contains
      *								 the code for this window
@@ -70,11 +75,11 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		var config = Foundation.UI.windowConfig[name] = {
 			title: name,
 			backgroundColor: '#fff',
-			url: 'Views/' + (params.file || name.replace(/ /g, '') + '.js')
+			url: Foundation.prefix + 'Views/' + (params.file || name.replace(/ /g, '') + '.js')
 		};
 
 		if(params) {
-			config = Foundation.augment(config, params);
+			config = Foundation.augment(config, Foundation.UI.windowTemplate, params);
 		}
 		
 		if(config.viewless) {
@@ -108,6 +113,9 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 			return null;
 		}
 	},
+	
+	getWindowTemplate: function() { return Foundation.UI.windowTemplate; },
+	setWindowTemplate: function(template) { template = template || {}; Foundation.UI.windowTemplate = template; },
 
 	/**
 	 * Opens a new window and creates it if needed. Internally calls Foundation.UI.createWindow, so it works
@@ -149,8 +157,8 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		winOptions = winOptions || null;
 		
 		// create a tabgroup if none has been created before
-		if(Foundation.TabGroup == null) {
-			Foundation.TabGroup = Ti.UI.createTabGroup();			
+		if(Foundation.currentTabGroup === null) {
+			Foundation.UI.createTabGroup();
 		}
 
 		// creates a window if doesn't exists. The window will have the same name
@@ -170,7 +178,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 			options.icon = icon.nativePath;
 		}
 		else {
-			options.icon = 'Images/FoundationGenericTab.png';
+			options.icon = Foundation.prefix + 'Images/FoundationGenericIcon.png';
 		}
 
 		tabOptions = Foundation.augment(options, tabOptions);
@@ -179,20 +187,68 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		Foundation.Tabs[name] = Ti.UI.createTab(tabOptions);
 		Foundation.Tabs[name].id = name;
 		Foundation.Tabs[name].mainWindowId = name;
-		Foundation.TabGroup.addTab(Foundation.Tabs[name]);
+		Foundation.UI.tabGroup().addTab(Foundation.Tabs[name]);
 		
 		return Foundation.Tabs[name];
 	},
 
 	/**
-	 * Return the current tab group.
-	 * @return {Ti.UI.TabGroup} The current TabGroup
+	 * Return the specifies tab group.
+	 * @param {string} [tabGroupId] The tab group identifier. Leave empty to return the current active tabgroup.
+	 * @return {Ti.UI.TabGroup} The current TabGroup or null of the specified tabgroup is not present.
 	 */
-	tabGroup: function() { return Foundation.TabGroup; }
+	tabGroup: function(tabGroupId) {
+		tabGroupId = tabGroupId || Foundation.currentTabGroup;
+		return Foundation.TabGroups[tabGroupId]; 
+	},
+	
+	/**
+	 * Closes the current active tabgroup and opens the specified tabgroup.
+	 * @param {string} [tabGroupId] The tab group identifier. Leave empty to close and reopen the current active tabgroup;
+	 */
+	openTabGroup: function(tabGroupId) {
+		
+		tabGroupId = tabGroupId || Foundation.currentTabGroup;
+		
+		Foundation.TabGroups[Foundation.currentTabGroup].close();
+		Foundation.TabGroups[tabGroupId].open();
+		
+		Foundation.currentTabGroup = tabGroupId;
+	},
+	
+	/**
+	 * Creates a tab group.
+	 * @param {string} [tabGroupId] The tab group identifier.
+	 * @param {object} [params] The params to give to the tab group, as Ti.UI.createTabGroup would expect.
+	 * @returns {Ti.UI.tabGroup} A Ti.UI.tabGroup instance
+	 */
+	createTabGroup: function(tabGroupId, params) {
+
+		params = params || {};
+		
+		if(tabGroupId instanceof Object) {
+			params = tabGroupId;
+			tabGroupId = Foundation.tabGroupCounter;
+			Foundation.tabGroupCounter++;
+		}
+		else if(!tabGroupId) {
+			tabGroupId = Foundation.tabGroupCounter;
+			Foundation.tabGroupCounter++;
+		}
+		
+		Foundation.TabGroups[tabGroupId] = Ti.UI.createTabGroup(params);
+		
+		if(Foundation.currentTabGroup === null) {
+			Foundation.currentTabGroup = tabGroupId;
+		}
+		
+		return Foundation.TabGroups[tabGroupId];
+	}
 };
 
-Ti.include('Foundation/Request.js');
-Ti.include('Foundation/Storage.js');
+Ti.include('app://Foundation/Request.js');
+Ti.include('app://Foundation/Storage.js');	
+Ti.include('app://Foundation/PersistentStorage.js');	
 
 /**
  * @namespace Your app's namespace. Extend this object to have its properties and methods referenced across all
