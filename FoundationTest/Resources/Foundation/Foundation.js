@@ -13,7 +13,8 @@ var Foundation = /** @lends Foundation# */ {
 		IOS: 'iPhone OS',
 		ANDROID: 'android',
 		isIOS: function() {return Ti.Platform.name == Foundation.Platform.IOS; },
-		isAndroid: function() {return Ti.Platform.name == Foundation.Platform.ANDROID; }
+		isAndroid: function() {return Ti.Platform.name == Foundation.Platform.ANDROID; },
+		isSimulator: function() { return (Titanium.Platform.model == 'google_sdk' || Titanium.Platform.model == 'Simulator'); }
 	}
 };
 

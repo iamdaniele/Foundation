@@ -2,6 +2,8 @@
 	app: Ti.UI.currentWindow.app,
 	win: Ti.UI.currentWindow,
 	
+	volatileDataSet: false,
+	
 	storageSetTest: function() {
 		
 		var win = this.app.foundation.UI.createWindow('testResult', {viewless: true});
@@ -36,11 +38,17 @@
 		})
 		win.add(closeButton);
 		win.open();
+		
+		this.volatileDataSet = true;
 	},	
 
 	storageGetTest: function() {
 		
 		var win = this.app.foundation.UI.createWindow('testResult', {viewless: true});
+		
+		if(!this.volatileDataSet) {
+			win.add(Ti.UI.createLabel({title: 'You should expect this test to fail. Set some data by using the Runtime Data Set test to pass the Runtime Data Get test.' + result, color: '#f00', top: 90}));
+		}
 		
 		var result = 'failed';
 		
@@ -162,6 +170,7 @@
 		
 		var numberAsString = '12.34';
 		value = this.app.foundation.PersistentStorage.get('numberAsString');
+
 		result = numberAsString === value ? 'passed' : 'failed';
 		win.add(Ti.UI.createLabel({title: 'float number (as string): ' + result, top: 30}));
 
@@ -178,7 +187,7 @@
 		result = 'passed';
 		var arrayValue = [1,2,3,4];
 		value = this.app.foundation.PersistentStorage.get('arrayValue');
-		if(value instanceof Array) {
+		if(value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null) {
 			if(value.length != arrayValue.length) {
 				result = 'failed (array length does not match)';
 			}
@@ -196,10 +205,11 @@
 		}
 		win.add(Ti.UI.createLabel({title: 'array: ' + result, top: 90}));
 
-		var result = 'passed';
+		result = 'passed';
 		var objectLiteral = {a: 'b', c: 2};
 		value = this.app.foundation.PersistentStorage.get('objectLiteral');
-		if(value instanceof Object) {
+
+		if(typeof value == 'object') {
 			for(var i in value) {
 				if(!objectLiteral[i]) {
 					result = 'failed (values don\'t match)';

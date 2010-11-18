@@ -46,7 +46,10 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		else {
 			if(Ti.App.Properties.hasProperty(key) && Ti.App.Properties.hasProperty(key + '_type')) {
 				if(includeKey) return {key: key, value: Foundation.PersistentStorage._get(key)};
-				else return Foundation.PersistentStorage._get(key);
+				else {
+					var value = Foundation.PersistentStorage._get(key);
+					return value;
+				}
 			}
 			else return null;
 		}
@@ -70,7 +73,10 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 				value = Ti.App.Properties.getInt(key);
 			break;
 			case 'Double':
-				value = Ti.App.Properties.getDouble(key);
+				// you might wonder why this instead of getDouble(): well, it's more accurate
+				// (always returns the correct type and value 100%, whilst getDouble() approximates the
+				// value which therefore might not be correct in all the architectures)
+				value = parseFloat(Ti.App.Properties.getString(key));
 			break;
 			case 'object':
 				value = Ti.App.Properties.getString(key);
@@ -88,7 +94,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	 * @param {mixed} value The value
 	 */
 	set: function(key, value) {
-		var type = Foundation.PersistentStorage.determineType(value);
+		var type = Foundation.PersistentStorage.typeOf(value);
 		
 		switch(type) {
 			case 'Bool':
@@ -119,7 +125,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		return value;
 	},
 	
-	determineType: function(value) {
+	typeOf: function(value) {
 		var type = null;
 		
 		switch(typeof value) {
@@ -130,7 +136,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 				type = 'String';
 			break;
 			case 'object':
-				if(value instanceof Array) {
+				if(value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null) {
 					type = 'List';
 				}
 				else {
