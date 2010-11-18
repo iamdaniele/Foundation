@@ -12,13 +12,16 @@ var Foundation = /** @lends Foundation# */ {
 	Platform:{
 		IOS: 'iPhone OS',
 		ANDROID: 'android',
+		IOS_DIR: 'iphone',
+		ANDROID_DIR: 'android',
 		isIOS: function() {return Ti.Platform.name == Foundation.Platform.IOS; },
 		isAndroid: function() {return Ti.Platform.name == Foundation.Platform.ANDROID; },
 		isSimulator: function() { return (Titanium.Platform.model == 'google_sdk' || Titanium.Platform.model == 'Simulator'); }
 	}
 };
 
-Foundation.prefix = Foundation.Platform.isIOS() ? 'app://' : '/';
+Foundation.platformDir = Foundation.Platform.isIOS() ? Foundation.Platform.IOS_DIR : Foundation.Platform.ANDROID_DIR;
+Foundation.prefix = Foundation.Platform.isIOS() ? '' : '/';
 
 /**
  * Extends objects (literals). Useful where you need to add properties to an object or to override
@@ -58,7 +61,11 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	
 	/**
 	 * Creates a new window as you would expect Titanium to do, but appends Foundation and the app namespace
-	 * to it.
+	 * to it. Also, this method will choose the right view to use for the window, provided that you have custom views.
+	 * If you want to use a custom view (sometimes referred as platform-specific views), create the path Resources/iphone/Views
+	 * and/or Resources/android/Views. Those paths will be checked first. If no custom view is found there, Foundation will use
+	 * the default path (Resources/Views).
+	 *
 	 * @param {string} name	The window name. It will be used for internal reference, as well to
 	 *						fetch the file that contains the view's code. To comply to Foundation's naming
 	 * 						conventions, any space will be trimmed. So, if your window title is “Apples and 
@@ -72,11 +79,25 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	createWindow: function(name, params) {
 		
 		params = params || {};
+		
+		var filename = '';
+		
+		if(!params.viewless) {
+			filename = (params.file || name.replace(/ /g, '') + '.js');
 
+			var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/' + Foundation.platformDir + '/Views/' + filename);
+			if(f.exists()) {
+				filename = f.nativePath;
+			}
+			else {
+				filename = Foundation.prefix + 'Views/' + filename;
+			}
+		}
+		
 		var config = Foundation.UI.windowConfig[name] = {
 			title: name,
 			backgroundColor: '#fff',
-			url: Foundation.prefix + 'Views/' + (params.file || name.replace(/ /g, '') + '.js')
+			url: filename
 		};
 
 		if(params) {
@@ -115,8 +136,26 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		}
 	},
 	
+	/**
+	 * Returns the current window template, if set.
+	 * @return {object} The window template. An empty object literal will be returned if no template is set.
+	 */
 	getWindowTemplate: function() { return Foundation.UI.windowTemplate; },
-	setWindowTemplate: function(template) { template = template || {}; Foundation.UI.windowTemplate = template; },
+
+	/**
+	 * Applies and stores a window template.
+	 * @param {object} template The template to apply.
+	 */
+	setWindowTemplate: function(template) {
+		
+		for(var name in Foundation.Windows) {
+			for(var i in template) {
+				Foundation.Windows[name][i] = template[i];
+			}
+		}				
+		
+		Foundation.UI.windowTemplate = template;
+	},
 
 	/**
 	 * Opens a new window and creates it if needed. Internally calls Foundation.UI.createWindow, so it works
@@ -247,9 +286,9 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	}
 };
 
-Ti.include('app://Foundation/Request.js');
-Ti.include('app://Foundation/Storage.js');	
-Ti.include('app://Foundation/PersistentStorage.js');	
+Ti.include(Foundation.prefix + 'Foundation/Request.js');
+Ti.include(Foundation.prefix + 'Foundation/Storage.js');	
+Ti.include(Foundation.prefix + 'Foundation/PersistentStorage.js');	
 
 /**
  * @namespace Your app's namespace. Extend this object to have its properties and methods referenced across all

@@ -6,14 +6,18 @@
 	tabIndex: 1,
 	
 	newWindowTest: function() {
-		var win = this.app.foundation.UI.createWindow('WindowTest', {modal: true});
+
+		/* Use createWindow to create a separate window (such as a modal one).
+		 * You can use openWindow to open a window inside a specified context (that is, a tab group or a navigation group).
+		 */		
+		var win = this.app.foundation.UI.createWindow('Window Test', {modal: true});
 		win.open();
 	},
 	
 	newViewlessWindowTest: function() {
-		var win = this.app.foundation.UI.createWindow('viewlessTest', {viewless: true, modal: true, layout: 'vertical'});		
+		var win = this.app.foundation.UI.createWindow('Viewless Window', {viewless: true, modal: true});		
 		var label1 = Ti.UI.createLabel({text: 'New viewless window created!', top: 40});
-		var closeButton = Ti.UI.createButton({title: 'Close', top: 80});
+		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10, height: 30});
 		
 		closeButton.addEventListener('click', function() {
 			win.close()
@@ -31,12 +35,49 @@
 		this.tabIndex++;
 	},
 	
+	windowTemplateTest: function() {
+		
+		this.app.foundation.UI.setWindowTemplate({
+			backgroundColor: '#8ff',
+			barColor: '#369'
+		});
+		
+	},
+	
+	changeWindowTemplateTest: function() {
+		this.app.foundation.UI.setWindowTemplate({
+			backgroundColor: '#fff',
+			barColor: '#123'
+		});
+	},
+	
+	platformSpecificViewTest: function() {
+
+		/* Use createWindow to create a separate window (such as a modal one).
+		 * You can use openWindow to open a window inside a specified context (that is, a tab group or a navigation group).
+		 */	
+		
+		/* Place your platform specific view inside Resources/iphone/Views or Resources/android/Views.
+		 * Then the following happens.
+		 * - You're on iOS and you have a default view (in Resources/Views) and a custom iOS view. The custom view will show.
+		 * - You're on Android and you have a default view (in Resources/Views) and a custom iOS view. The default view will show.
+		 * - You have only custom views (one in Resources/iphone/Views and one in Resrouces/android/Views). A custom view will be picked
+		 *   depending on the platform you're using.
+		 * - You're on iOS, you have a custom Android view and you DON'T have a default view. An error will be triggered (file not found).
+		 */
+
+		this.app.foundation.UI.openWindow('Platform Specific View', Ti.UI.currentTab);
+	},
+	
 	init: function() {
 		
 		var data = [
 			{title: 'Window', fn: 'newWindowTest', fn: 'newWindowTest', hasChild: true},
 			{title: 'Viewless window', fn: 'newViewlessWindowTest', hasChild: true},
-			{title: 'Create Tab', fn: 'createTabTest', hasChild: true}
+			{title: 'Create Tab', fn: 'createTabTest', hasChild: true},
+			{title: 'Set Window Template', fn: 'windowTemplateTest', hasChild: true},
+			{title: 'Change Window Template', fn: 'changeWindowTemplateTest', hasChild: true},
+			{title: 'Platform Specific View', fn: 'platformSpecificViewTest', hasChild: true}
 		];
 		
 		var table = Ti.UI.createTableView({

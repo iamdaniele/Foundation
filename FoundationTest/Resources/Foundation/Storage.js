@@ -4,6 +4,14 @@
 Foundation.Storage = /** @lends Foundation.Storage# */{
 	_data: {},
 	_watch: {},
+	Event: /** @lends Foundation.Storage.Event# */ {
+		/**
+		 * Event name to use when watching value changes.
+		 * @constant
+		 */
+		CHANGE: 'Foundation.Storage.change'
+	},
+	
 	/**
 	 * Gets one or more values safely.
 	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
@@ -89,15 +97,26 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 		}	
 	},
 	
+	/**
+	 * Resets the storage.
+	 */
 	reset: function() {
 		Foundation.Storage._data = {};
 	},
 	
+	/**
+	 * Start watching one or more keys for any change. Use this method when you want your application to be
+	 * notifies when a value is added, changed or removed (via Ti.App.addEventListener).
+	 * @param {mixed} key	The key to watch. It can be a regex or a string.
+	 */
 	watch: function(key) {
-		Ti.API.info('[Foundation.Storage] registering key ' + key.toString());
 		Foundation.Storage._watch[key.toString()] = (Foundation.Storage.isRegExp(key) ? 'regex' : 'string');
 	},
 	
+	/**
+	 * Stop watching one or more keys.
+	 * @param {mixed} key	The key to watch. It can be a regex or a string.
+	 */
 	unwatch: function(key) {
 		delete Foundation.Storage._watch[key.toString()];
 	},
@@ -107,13 +126,11 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 			if(Foundation.Storage._watch[key.toString()] == 'regex') {
 				regex = new RegExp(key.toString());
 				if(regex.test(key)) {
-					Ti.API.info('[Foundation.Storage] triggering watch event for key ' + key.toString());
-					Ti.App.fireEvent('Foundation.Storage.change', {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
+					Ti.App.fireEvent(Foundation.Storage.Event.CHANGE, {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
 				}
 			}			
 			else if(Foundation.Storage._watch[key.toString()] == 'string') {
-				Ti.API.info('[Foundation.Storage] triggering watch event for key ' + key.toString());
-				Ti.App.fireEvent('Foundation.Storage.change', {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
+				Ti.App.fireEvent(Foundation.Storage.Event.CHANGE, {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
 			}
 		}
 	}

@@ -4,12 +4,13 @@
 	
 	init: function() {
 		var self = this;
+		
 		var label1 = Ti.UI.createLabel({text: 'New window created.', top: 20});
 		
 		var foundationContextAvailable = 'Foundation context available: ' + (typeof this.app.foundation != 'undefined' ? 'yes' : 'no');
 		
-		var label2 = Ti.UI.createLabel({text: foundationContextAvailable, top: 40});
-		var closeButton = Ti.UI.createButton({title: 'Close', top: 80});
+		var label2 = Ti.UI.createLabel({text: foundationContextAvailable, top: 50});
+		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10, height: 30});
 		closeButton.addEventListener('click', function() {
 			self.win.close();
 		})

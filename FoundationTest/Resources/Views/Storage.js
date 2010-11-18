@@ -6,33 +6,33 @@
 	
 	storageSetTest: function() {
 		
-		var win = this.app.foundation.UI.createWindow('testResult', {viewless: true});
+		var win = this.app.foundation.UI.createWindow('Runtime Storage Set Data', {viewless: true, modal: true});
 		
 		var stringValue = 'test string';
 		this.app.foundation.Storage.set('stringValue', stringValue);
-		win.add(Ti.UI.createLabel({title: 'string value set', top: 10}));
+		win.add(Ti.UI.createLabel({text: 'string value set', top: 30}));
 		
 		var numberAsString = '12.34';
 		this.app.foundation.Storage.set('numberAsString', numberAsString);
-		win.add(Ti.UI.createLabel({title: 'float number (as string) set', top: 30}));
+		win.add(Ti.UI.createLabel({text: 'float number (as string) set', top: 50}));
 
 		var integer = 12;
 		this.app.foundation.Storage.set('integer', integer);
-		win.add(Ti.UI.createLabel({title: 'integer set', top: 50}));
+		win.add(Ti.UI.createLabel({text: 'integer set', top: 70}));
 				
 		var floatValue = 12.34;
 		this.app.foundation.Storage.set('floatValue', floatValue);
-		win.add(Ti.UI.createLabel({title: 'float number set', top: 70}));		
+		win.add(Ti.UI.createLabel({text: 'float number set', top: 90}));		
 		
 		var arrayValue = [1,2,3,4];
 		this.app.foundation.Storage.set('arrayValue', arrayValue);
-		win.add(Ti.UI.createLabel({title: 'array set', top: 90}));
+		win.add(Ti.UI.createLabel({text: 'array set', top: 110}));
 
 		var objectLiteral = {a: 'b', c: 2};
 		this.app.foundation.Storage.set('objectLiteral', objectLiteral);
-		win.add(Ti.UI.createLabel({title: 'object literal set', top: 110}));		
+		win.add(Ti.UI.createLabel({text: 'object literal set', top: 130}));		
 		
-		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10});
+		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10, height: 30});
 		closeButton.addEventListener('click', function() {
 			win.close();
 		})
@@ -47,7 +47,7 @@
 		var win = this.app.foundation.UI.createWindow('testResult', {viewless: true});
 		
 		if(!this.volatileDataSet) {
-			win.add(Ti.UI.createLabel({title: 'You should expect this test to fail. Set some data by using the Runtime Data Set test to pass the Runtime Data Get test.' + result, color: '#f00', top: 90}));
+			win.add(Ti.UI.createLabel({text: 'This test has failed because no data was set. Set the data by using the Runtime Data Set test to pass the Runtime Data Get test.', color: '#f00', bottom: 100}));
 		}
 		
 		var result = 'failed';
@@ -55,22 +55,22 @@
 		var stringValue = 'test string';
 		var value = this.app.foundation.Storage.get('stringValue');
 		result = stringValue === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'string value: ' + result, top: 10}));
+		win.add(Ti.UI.createLabel({text: 'string value: ' + result, top: 10}));
 		
 		var numberAsString = '12.34';
 		value = this.app.foundation.Storage.get('numberAsString');
 		result = numberAsString === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'float number (as string): ' + result, top: 30}));
+		win.add(Ti.UI.createLabel({text: 'float number (as string): ' + result, top: 30}));
 
 		var integer = 12;
 		value = this.app.foundation.Storage.get('integer');
 		result = integer === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'integer: ' + result, top: 50}));
+		win.add(Ti.UI.createLabel({text: 'integer: ' + result, top: 50}));
 				
 		var floatValue = 12.34;
 		value = this.app.foundation.Storage.get('floatValue');
 		result = floatValue === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'float number: ' + result, top: 70}));		
+		win.add(Ti.UI.createLabel({text: 'float number: ' + result, top: 70}));		
 		
 		result = 'passed';
 		var arrayValue = [1,2,3,4];
@@ -91,7 +91,7 @@
 		else {
 			result = 'failed (return value is not an array)'
 		}
-		win.add(Ti.UI.createLabel({title: 'array: ' + result, top: 90}));
+		win.add(Ti.UI.createLabel({text: 'array: ' + result, top: 90}));
 
 		var result = 'passed';
 		var objectLiteral = {a: 'b', c: 2};
@@ -111,9 +111,9 @@
 		else {
 			result = 'failed (return value is not object)';
 		}
-		win.add(Ti.UI.createLabel({title: 'object literal: ' + result, top: 110}));		
+		win.add(Ti.UI.createLabel({text: 'object literal: ' + result, top: 110}));		
 		
-		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10});
+		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10, height: 30});
 		closeButton.addEventListener('click', function() {
 			win.close();
 		})
@@ -127,29 +127,29 @@
 		
 		var stringValue = 'test string';
 		this.app.foundation.PersistentStorage.set('stringValue', stringValue);
-		win.add(Ti.UI.createLabel({title: 'string value set', top: 10}));
+		win.add(Ti.UI.createLabel({text: 'string value set', top: 10}));
 		
 		var numberAsString = '12.34';
 		this.app.foundation.PersistentStorage.set('numberAsString', numberAsString);
-		win.add(Ti.UI.createLabel({title: 'float number (as string) set', top: 30}));
+		win.add(Ti.UI.createLabel({text: 'float number (as string) set', top: 30}));
 
 		var integer = 12;
 		this.app.foundation.PersistentStorage.set('integer', integer);
-		win.add(Ti.UI.createLabel({title: 'integer set', top: 50}));
+		win.add(Ti.UI.createLabel({text: 'integer set', top: 50}));
 				
 		var floatValue = 12.34;
 		this.app.foundation.PersistentStorage.set('floatValue', floatValue);
-		win.add(Ti.UI.createLabel({title: 'float number set', top: 70}));		
+		win.add(Ti.UI.createLabel({text: 'float number set', top: 70}));		
 		
 		var arrayValue = [1,2,3,4];
 		this.app.foundation.PersistentStorage.set('arrayValue', arrayValue);
-		win.add(Ti.UI.createLabel({title: 'array set', top: 90}));
+		win.add(Ti.UI.createLabel({text: 'array set', top: 90}));
 
 		var objectLiteral = {a: 'b', c: 2};
 		this.app.foundation.PersistentStorage.set('objectLiteral', objectLiteral);
-		win.add(Ti.UI.createLabel({title: 'object literal set', top: 110}));		
+		win.add(Ti.UI.createLabel({text: 'object literal set', top: 110}));		
 		
-		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10});
+		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10, height: 30});
 		closeButton.addEventListener('click', function() {
 			win.close();
 		})
@@ -166,23 +166,23 @@
 		var stringValue = 'test string';
 		var value = this.app.foundation.PersistentStorage.get('stringValue');
 		result = stringValue === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'string value: ' + result, top: 10}));
+		win.add(Ti.UI.createLabel({text: 'string value: ' + result, top: 10}));
 		
 		var numberAsString = '12.34';
 		value = this.app.foundation.PersistentStorage.get('numberAsString');
 
 		result = numberAsString === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'float number (as string): ' + result, top: 30}));
+		win.add(Ti.UI.createLabel({text: 'float number (as string): ' + result, top: 30}));
 
 		var integer = 12;
 		value = this.app.foundation.PersistentStorage.get('integer');
 		result = integer === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'integer: ' + result, top: 50}));
+		win.add(Ti.UI.createLabel({text: 'integer: ' + result, top: 50}));
 				
 		var floatValue = 12.34;
 		value = this.app.foundation.PersistentStorage.get('floatValue');
 		result = floatValue === value ? 'passed' : 'failed';
-		win.add(Ti.UI.createLabel({title: 'float number: ' + result, top: 70}));		
+		win.add(Ti.UI.createLabel({text: 'float number: ' + result, top: 70}));		
 		
 		result = 'passed';
 		var arrayValue = [1,2,3,4];
@@ -203,7 +203,7 @@
 		else {
 			result = 'failed (return value is not an array)'
 		}
-		win.add(Ti.UI.createLabel({title: 'array: ' + result, top: 90}));
+		win.add(Ti.UI.createLabel({text: 'array: ' + result, top: 90}));
 
 		result = 'passed';
 		var objectLiteral = {a: 'b', c: 2};
@@ -224,9 +224,9 @@
 		else {
 			result = 'failed (return value is not object)';
 		}
-		win.add(Ti.UI.createLabel({title: 'object literal: ' + result, top: 110}));		
+		win.add(Ti.UI.createLabel({text: 'object literal: ' + result, top: 110}));		
 		
-		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10});
+		var closeButton = Ti.UI.createButton({title: 'Close', bottom: 10, height: 30});
 		closeButton.addEventListener('click', function() {
 			win.close();
 		})

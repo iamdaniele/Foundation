@@ -1,8 +1,20 @@
 /**
  * Dictionary-based persistent storage.
+
+ * @description As this class relies on Titanium.App.Properties, for each value Foundation will store an extra value
+ * to keep reference of the value's type. This allows you to get and set values without worrying of data types and
+ * performances.
  */
 Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	_watch: {},
+	Event: /** @lends Foundation.PersistentStorage.Event# */ {
+		/**
+		 * Event name to use when watching value changes.
+		 * @constant
+		 */
+		CHANGE: 'Foundation.PersistentStorage.change'
+	},
+
 	/**
 	 * Gets one or more values safely.
 	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
@@ -152,7 +164,8 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	},
 		
 	/**
-	 *	@param {mixed} key The key to remove. If string, the key will be removed, if present. You can
+	 * Permanently removes a value from the storage.
+	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
 	 *					   provide a regex that will delete all the matching keys.
 	 */
 	remove: function(key) {
@@ -177,18 +190,29 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		}	
 	},
 	
+	/**
+	 * Resets the storage.
+	 */
 	reset: function() {
 		var properties = Ti.App.Properties.listProperties();
 		for(var i in properties) {
 			Ti.App.removeProperty(properties[i]);
 		}
 	},
-	
+
+	/**
+	 * Start watching one or more keys for any change. Use this method when you want your application to be
+	 * notifies when a value is added, changed or removed (via Ti.App.addEventListener).
+	 * @param {mixed} key	The key to watch. It can be a regex or a string.
+	 */
 	watch: function(key) {
-		Ti.API.info('[Foundation.Storage] registering key ' + key.toString());
 		Foundation.PersistentStorage._watch[key.toString()] = (Foundation.Storage.isRegExp(key) ? 'regex' : 'string');
 	},
 	
+	/**
+	 * Stop watching one or more keys.
+	 * @param {mixed} key	The key to watch. It can be a regex or a string.
+	 */
 	unwatch: function(key) {
 		delete Foundation.PersistentStorage._watch[key.toString()];
 	},
@@ -198,13 +222,11 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 			if(Foundation.PersistentStorage._watch[key.toString()] == 'regex') {
 				regex = new RegExp(key.toString());
 				if(regex.test(key)) {
-					Ti.API.info('[Foundation.Storage] triggering watch event for key ' + key.toString());
-					Ti.App.fireEvent('Foundation.Storage.change', {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
+					Ti.App.fireEvent(Foundation.PersistentStorage.Event.CHANGE, {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
 				}
 			}			
 			else if(Foundation.PersistentStorage._watch[key.toString()] == 'string') {
-				Ti.API.info('[Foundation.Storage] triggering watch event for key ' + key.toString());
-				Ti.App.fireEvent('Foundation.Storage.change', {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
+				Ti.App.fireEvent(Foundation.PersistentStorage.Event.CHANGE, {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
 			}
 		}
 	}
