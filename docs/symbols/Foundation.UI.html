@@ -197,8 +197,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Foundation.Request.html">Foundation.Request</a></li>
 	
-	<li><a href="../symbols/Foundation.Storage.html">Foundation.Storage</a></li>
-	
 	<li><a href="../symbols/Foundation.UI.html">Foundation.UI</a></li>
 	
 </ul>
@@ -278,6 +276,15 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#createTabGroup">createTabGroup</a></b>(tabGroupId, params)
+								</div>
+								<div class="description">Creates a tab group.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#createWindow">createWindow</a></b>(name, params)
 								</div>
 								<div class="description">Creates a new window as you would expect Titanium to do, but appends Foundation and the app namespace
@@ -297,6 +304,24 @@ to it.</div>
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#getWindowTemplate">getWindowTemplate</a></b>()
+								</div>
+								<div class="description">Returns the current window template, if set.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#openTabGroup">openTabGroup</a></b>(tabGroupId)
+								</div>
+								<div class="description">Closes the current active tabgroup and opens the specified tabgroup.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#openWindow">openWindow</a></b>(name, context, windowOptions, options)
 								</div>
 								<div class="description">Opens a new window and creates it if needed.</div>
@@ -306,9 +331,18 @@ to it.</div>
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#tabGroup">tabGroup</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#setWindowTemplate">setWindowTemplate</a></b>(template)
 								</div>
-								<div class="description">Return the current tab group.</div>
+								<div class="description">Applies and stores a window template.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Foundation.UI.html#tabGroup">tabGroup</a></b>(tabGroupId)
+								</div>
+								<div class="description">Return the specifies tab group.</div>
 							</td>
 						</tr>
 					
@@ -417,6 +451,55 @@ Foundation application, so it will be automatically created if needed.
 
 					<hr />
 				
+					<a name="createTabGroup"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Ti.UI.tabGroup}</span>
+					<b>createTabGroup</b>(tabGroupId, params)
+					
+					</div>
+					<div class="description">
+						Creates a tab group.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>tabGroupId</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The tab group identifier.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{object}</span> <b>params</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The params to give to the tab group, as Ti.UI.createTabGroup would expect.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Ti.UI.tabGroup}</span> A Ti.UI.tabGroup instance</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
 					<a name="createWindow"> </a>
 					<div class="fixedFont">
 					
@@ -426,7 +509,10 @@ Foundation application, so it will be automatically created if needed.
 					</div>
 					<div class="description">
 						Creates a new window as you would expect Titanium to do, but appends Foundation and the app namespace
-to it.
+to it. Also, this method will choose the right view to use for the window, provided that you have custom views.
+If you want to use a custom view (sometimes referred as platform-specific views), create the path Resources/iphone/Views
+and/or Resources/android/Views. Those paths will be checked first. If no custom view is found there, Foundation will use
+the default path (Resources/Views).
 						
 						
 					</div>
@@ -447,7 +533,7 @@ to it.
 						Oranges”, this method will fetch the file ApplesAndOranges.js.</dd>
 							
 								<dt>
-									<span class="light fixedFont">{string}</span> <b>params</b>
+									<span class="light fixedFont">{object}</span> <b>params</b>
 									
 								</dt>
 								<dd>The configuration options, same as Titanium's parameters.</dd>
@@ -533,6 +619,74 @@ to it.
 
 					<hr />
 				
+					<a name="getWindowTemplate"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{object}</span>
+					<b>getWindowTemplate</b>()
+					
+					</div>
+					<div class="description">
+						Returns the current window template, if set.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{object}</span> The window template. An empty object literal will be returned if no template is set.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="openTabGroup"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>openTabGroup</b>(tabGroupId)
+					
+					</div>
+					<div class="description">
+						Closes the current active tabgroup and opens the specified tabgroup.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>tabGroupId</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The tab group identifier. Leave empty to close and reopen the current active tabgroup;</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="openWindow"> </a>
 					<div class="fixedFont">
 					
@@ -592,21 +746,68 @@ the window right away.
 
 					<hr />
 				
+					<a name="setWindowTemplate"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setWindowTemplate</b>(template)
+					
+					</div>
+					<div class="description">
+						Applies and stores a window template.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{object}</span> <b>template</b>
+									
+								</dt>
+								<dd>The template to apply.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="tabGroup"> </a>
 					<div class="fixedFont">
 					
 					<span class="light">{Ti.UI.TabGroup}</span>
-					<b>tabGroup</b>()
+					<b>tabGroup</b>(tabGroupId)
 					
 					</div>
 					<div class="description">
-						Return the current tab group.
+						Return the specifies tab group.
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>tabGroupId</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The tab group identifier. Leave empty to return the current active tabgroup.</dd>
+							
+							</dl>
 						
 						
 						
@@ -615,7 +816,7 @@ the window right away.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Ti.UI.TabGroup}</span> The current TabGroup</dd>
+								<dd><span class="light fixedFont">{Ti.UI.TabGroup}</span> The current TabGroup or null of the specified tabgroup is not present.</dd>
 							
 							</dl>
 						
@@ -636,7 +837,7 @@ the window right away.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.2 on Wed Sep 29 2010 10:47:11 GMT+0100 (IST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Nov 18 2010 17:46:10 GMT-0000 (GMT)
 		</div>
 	</body>
 </html>
