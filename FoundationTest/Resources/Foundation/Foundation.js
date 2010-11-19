@@ -179,6 +179,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * @param {object} [windowOptions] A dictionary of properties as Ti.UI.createWindow would expect
 	 * @param {object} [options] A dictionary of properties as Ti.UI.TabbedBar or Ti.UI.iPhone.NavigationGroup
 	 * 							 would expect.
+	 * @return {object} The window opened
 	 */
 	openWindow: function(name, context, windowOptions, options) {
 		
@@ -189,6 +190,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 
 		// context should be Ti.UI.currentTab or a Navigation Group instance
 		context.open(Foundation.Windows[name], options);
+		return Foundation.Windows[name];
 	},
 	
 	/**

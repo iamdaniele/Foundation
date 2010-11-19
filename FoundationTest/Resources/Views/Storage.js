@@ -2,8 +2,6 @@
 	app: Ti.UI.currentWindow.app,
 	win: Ti.UI.currentWindow,
 	
-	volatileDataSet: false,
-	
 	storageSetTest: function() {
 		
 		var win = this.app.foundation.UI.createWindow('Runtime Storage Set Data', {viewless: true, modal: true});
@@ -39,16 +37,11 @@
 		win.add(closeButton);
 		win.open();
 		
-		this.volatileDataSet = true;
 	},	
 
 	storageGetTest: function() {
 		
 		var win = this.app.foundation.UI.createWindow('testResult', {viewless: true});
-		
-		if(!this.volatileDataSet) {
-			win.add(Ti.UI.createLabel({text: 'This test has failed because no data was set. Set the data by using the Runtime Data Set test to pass the Runtime Data Get test.', color: '#f00', bottom: 100}));
-		}
 		
 		var result = 'failed';
 		
@@ -160,7 +153,7 @@
 	persistentStorageGetTest: function() {
 		
 		var win = this.app.foundation.UI.createWindow('testResult', {viewless: true});
-		
+
 		var result = 'failed';
 		
 		var stringValue = 'test string';
@@ -187,7 +180,8 @@
 		result = 'passed';
 		var arrayValue = [1,2,3,4];
 		value = this.app.foundation.PersistentStorage.get('arrayValue');
-		if(value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null) {
+
+		if(value != null && value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null) {
 			if(value.length != arrayValue.length) {
 				result = 'failed (array length does not match)';
 			}
@@ -209,7 +203,7 @@
 		var objectLiteral = {a: 'b', c: 2};
 		value = this.app.foundation.PersistentStorage.get('objectLiteral');
 
-		if(typeof value == 'object') {
+		if(value != null && typeof value == 'object') {
 			for(var i in value) {
 				if(!objectLiteral[i]) {
 					result = 'failed (values don\'t match)';
@@ -268,14 +262,14 @@
 	init: function() {
 		
 		var data = [
-			{title: 'Runtime Storage (store)', fn: 'storageSetTest', hasChild: true},
-			{title: 'Runtime Storage (retrieve)', fn: 'storageGetTest', hasChild: true},
-			{title: 'Runtime Storage (remove)', fn: 'storageRemoveTest', hasChild: true},
-			{title: 'Runtime Storage (reset)', fn: 'storageResetTest', hasChild: true},
-			{title: 'Persistent Storage (store)', fn: 'persistentStorageSetTest', hasChild: true},
-			{title: 'Persistent Storage (retrieve)', fn: 'persistentStorageGetTest', hasChild: true},
-			{title: 'Persistent Storage (remove)', fn: 'persistentStorageRemoveTest', hasChild: true},
-			{title: 'Persistent Storage (reset)', fn: 'persistentStorageResetTest', hasChild: true}
+			{title: 'Store values', fn: 'storageSetTest', hasChild: true, header: 'Runtime Storage'},
+			{title: 'Retrieve values', fn: 'storageGetTest', hasChild: true},
+			{title: 'Remove a value', fn: 'storageRemoveTest', hasChild: true},
+			{title: 'Reset storage', fn: 'storageResetTest', hasChild: true},
+			{title: 'Store values', fn: 'persistentStorageSetTest', hasChild: true, header: 'Persistent Storage'},
+			{title: 'Retrieve values', fn: 'persistentStorageGetTest', hasChild: true},
+			{title: 'Remove a value', fn: 'persistentStorageRemoveTest', hasChild: true},
+			{title: 'Reset storage', fn: 'persistentStorageResetTest', hasChild: true}
 		];
 		
 		var table = Ti.UI.createTableView({
