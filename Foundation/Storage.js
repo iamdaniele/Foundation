@@ -1,5 +1,6 @@
 /**
  * Dictionary-based storage for runtime data.
+ * @class
  */
 Foundation.Storage = /** @lends Foundation.Storage# */{
 	_data: {},

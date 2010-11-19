@@ -4,6 +4,7 @@
  * @description As this class relies on Titanium.App.Properties, for each value Foundation will store an extra value
  * to keep reference of the value's type. This allows you to get and set values without worrying of data types and
  * performances.
+ * @class
  */
 Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	_watch: {},
