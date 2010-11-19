@@ -14,6 +14,20 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		 */
 		CHANGE: 'Foundation.PersistentStorage.change'
 	},
+	
+	/**
+	 * @name Foundation.PersistentStorage.change
+	 * Event triggered when a value changes. Fired only on demand, that is, only if one or more key listeners
+	 * are registered.
+	 * @event
+	 * @param {Object} e Event object
+	 * @param {string} e.type Type of the event (currently only set is supported)
+	 * @param {string} e.keySelector The selector query that matched the key. For example, if the key 'cat'
+	 *								 has changed and the regular expression /(b|c)at/ matched, this parameter will contain
+	 * 								 the string /(b|c)at/. You can use this string to re-create the matching regex.
+	 * @param {string} e.key		 The key for which the event has occurred. In the example above, this will be 'cat'.
+	 * @param {mixed}  e.value		 The new value.
+	 */
 
 	/**
 	 * Gets one or more values safely.
@@ -67,6 +81,12 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		}
 	},
 	
+	/**
+	 * Retrieves the value for the specified key in the correct format.
+	 * @private
+	 * @param {string} key	The dictionary's key
+	 * @return {mixed}	The return value or null if no value is found.
+	 */
 	_get: function(key) {
 		var value = null;
 		var type = Ti.App.Properties.getString(key + '_type');
@@ -137,6 +157,13 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		return value;
 	},
 	
+	/**
+	 * Determines the correct type of the specified value.
+	 * @private
+	 * @param {mixed} value The value to check
+	 * @return {string} A string containing the value type (Bool, String, object, List, Double, Int).
+	 * 				    The name format allows other method to use reflection (Ti.App.Properties.getXXXX)
+	 */
 	typeOf: function(value) {
 		var type = null;
 		
@@ -148,6 +175,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 				type = 'String';
 			break;
 			case 'object':
+				// value instanceof Array does not report the correct result in Titanium.
 				if(value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null) {
 					type = 'List';
 				}
@@ -175,18 +203,15 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 			
 			for(var i in properties) {
 				if(key.test(properties[i]) && properties[i].match(/_type$/) == null) {
+					Foundation.Storage.checkWatchKey(key, null);
 					Ti.App.Properties.removeProperty(properties[i]);
 					Ti.App.Properties.removeProperty(properties[i] + '_type');
-					
-					Foundation.Storage.checkWatchKey(key, null);					
 				}
 			}
 		}
 		else if(Ti.App.Properties.hasProperty(key)) {
+			Foundation.Storage.checkWatchKey(key, null);
 			Ti.App.Properties.removeProperty(key);
-			
-			Foundation.Storage.checkWatchKey();
-			
 		}	
 	},
 	
@@ -196,7 +221,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	reset: function() {
 		var properties = Ti.App.Properties.listProperties();
 		for(var i in properties) {
-			Ti.App.removeProperty(properties[i]);
+			Ti.App.Properties.removeProperty(properties[i]);
 		}
 	},
 
@@ -217,12 +242,22 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 		delete Foundation.PersistentStorage._watch[key.toString()];
 	},
 	
+	/**
+	 * Checks if any key listener is registered against the specified key.
+	 *
+	 * First of all, this method checks if the key dictionary contains a matching key (either a regex or a string).
+	 * A regex is syntesized by using its string value (as we can't store regex references properly). If any matching
+	 * key is found, this method will trigger an event.
+	 * @private
+	 * @param {mixed} key The value key (either a regex or a string)
+	 * @param {mixed} value The value for the specified key. It will be passed along with the event data.
+	 */
 	checkWatchKey: function(key, value) {
 		if(Foundation.PersistentStorage._watch[key.toString()]) {
 			if(Foundation.PersistentStorage._watch[key.toString()] == 'regex') {
 				regex = new RegExp(key.toString());
 				if(regex.test(key)) {
-					Ti.App.fireEvent(Foundation.PersistentStorage.Event.CHANGE, {type:'set', keySelector: key.toString(), key:key.toString(), value: value});					
+					Ti.App.fireEvent(Foundation.PersistentStorage.Event.CHANGE, {type:'set', keySelector: key.toString(), key:key.toString(), value: value});
 				}
 			}			
 			else if(Foundation.PersistentStorage._watch[key.toString()] == 'string') {

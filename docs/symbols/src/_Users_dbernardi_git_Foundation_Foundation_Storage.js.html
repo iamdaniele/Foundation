@@ -18,127 +18,153 @@
 <span class='line'> 11</span> 		 */</span><span class="WHIT">
 <span class='line'> 12</span> </span><span class="WHIT">		</span><span class="NAME">CHANGE</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'Foundation.Storage.change'</span><span class="WHIT">
 <span class='line'> 13</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 14</span> </span><span class="WHIT">	
-<span class='line'> 15</span> 	</span><span class="COMM">/**
-<span class='line'> 16</span> 	 * Gets one or more values safely.
-<span class='line'> 17</span> 	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
-<span class='line'> 18</span> 	 *					   provide a regex that will delete all the matching keys.
-<span class='line'> 19</span> 	 * @param {boolean} [includeKey=false] True to return an object with two properties: key (the key for this value)
-<span class='line'> 20</span> 	 *                  and value (the value).
-<span class='line'> 21</span> 	 * @return {mixed} If you provided a string key:
-<span class='line'> 22</span> 	 * 				&lt;ul>
-<span class='line'> 23</span> 	 *					&lt;li>If the key is present, the value will be returned.&lt;/li>
-<span class='line'> 24</span> 	 *					&lt;li>If the key is present and includeKey is true, an object will be returned (see the description
-<span class='line'> 25</span> 	 *                  for includeKey).&lt;/li>
-<span class='line'> 26</span> 	 *					&lt;li>If the key is not present, null will be returned.&lt;/li>
-<span class='line'> 27</span> 	 *				&lt;/ul>
-<span class='line'> 28</span> 	 *				If you provided a regex:
-<span class='line'> 29</span> 	 * 				&lt;ul>
-<span class='line'> 30</span> 	 *					&lt;li>If the regex matches one or more keys, an array of values will be returned.&lt;/li>
-<span class='line'> 31</span> 	 *					&lt;li>If the regex matches one or more keys and includeKey is true, an array of objects
-<span class='line'> 32</span> 	 *                  will be returned (see the description for includeKey).&lt;/li>
-<span class='line'> 33</span> 	 *					&lt;li>If the regex doesn't match any key, an empty array will be returned.&lt;/li>
-<span class='line'> 34</span> 	 *				&lt;/ul>
-<span class='line'> 35</span> 	 */</span><span class="WHIT">
-<span class='line'> 36</span> </span><span class="WHIT">	</span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">includeKey</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 37</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.isRegExp</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 38</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">o</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 39</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 40</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">key.test</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 41</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">includeKey</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 42</span> </span><span class="WHIT">						</span><span class="NAME">o.push</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">key</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 43</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 44</span> </span><span class="WHIT">					</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 45</span> </span><span class="WHIT">						</span><span class="NAME">o.push</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">						
-<span class='line'> 46</span> 					</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 47</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 48</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 49</span> </span><span class="WHIT">			
-<span class='line'> 50</span> 			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">o</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 51</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 52</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 53</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 54</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">includeKey</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">key</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 55</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 56</span> </span><span class="WHIT">				
-<span class='line'> 57</span> 			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 58</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 59</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 60</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 61</span> </span><span class="WHIT">	
-<span class='line'> 62</span> 	</span><span class="NAME">isRegExp</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">key.constructor.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">match</span><span class="PUNC">(</span><span class="REGX">/^function RegExp\(\)/</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 63</span> </span><span class="WHIT">	
-<span class='line'> 64</span> 	</span><span class="COMM">/**
-<span class='line'> 65</span> 	 * Sets a value.
-<span class='line'> 66</span> 	 * @param {string} key The key
-<span class='line'> 67</span> 	 * @param {mixed} value The value
-<span class='line'> 68</span> 	 */</span><span class="WHIT">
-<span class='line'> 69</span> </span><span class="WHIT">	</span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 70</span> </span><span class="WHIT">		</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 71</span> </span><span class="WHIT">		
-<span class='line'> 72</span> 		</span><span class="NAME">Foundation.Storage.checkWatchKey</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 73</span> </span><span class="WHIT">		
-<span class='line'> 74</span> 		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 75</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 76</span> </span><span class="WHIT">		
-<span class='line'> 77</span> 	</span><span class="COMM">/**
-<span class='line'> 78</span> 	 *	@param {mixed} key The key to remove. If string, the key will be removed, if present. You can
-<span class='line'> 79</span> 	 *					   provide a regex that will delete all the matching keys.
-<span class='line'> 80</span> 	 */</span><span class="WHIT">
-<span class='line'> 81</span> </span><span class="WHIT">	</span><span class="NAME">remove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 82</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.isRegExp</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 83</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 84</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">key.test</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 85</span> </span><span class="WHIT">					</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 86</span> </span><span class="WHIT">					
-<span class='line'> 87</span> 					</span><span class="NAME">Foundation.Storage.checkWatchKey</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					
-<span class='line'> 88</span> 				</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 89</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 90</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 91</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 92</span> </span><span class="WHIT">			</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 93</span> </span><span class="WHIT">			</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 94</span> </span><span class="WHIT">			
-<span class='line'> 95</span> 			</span><span class="NAME">Foundation.Storage.checkWatchKey</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 96</span> </span><span class="WHIT">			
-<span class='line'> 97</span> 		</span><span class="PUNC">}</span><span class="WHIT">	
-<span class='line'> 98</span> 	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 99</span> </span><span class="WHIT">	
-<span class='line'>100</span> 	</span><span class="COMM">/**
-<span class='line'>101</span> 	 * Resets the storage.
-<span class='line'>102</span> 	 */</span><span class="WHIT">
-<span class='line'>103</span> </span><span class="WHIT">	</span><span class="NAME">reset</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>104</span> </span><span class="WHIT">		</span><span class="NAME">Foundation.Storage._data</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>105</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>106</span> </span><span class="WHIT">	
-<span class='line'>107</span> 	</span><span class="COMM">/**
-<span class='line'>108</span> 	 * Start watching one or more keys for any change. Use this method when you want your application to be
-<span class='line'>109</span> 	 * notifies when a value is added, changed or removed (via Ti.App.addEventListener).
-<span class='line'>110</span> 	 * @param {mixed} key	The key to watch. It can be a regex or a string.
-<span class='line'>111</span> 	 */</span><span class="WHIT">
-<span class='line'>112</span> </span><span class="WHIT">	</span><span class="NAME">watch</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>113</span> </span><span class="WHIT">		</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.isRegExp</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="STRN">'regex'</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>114</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 14</span> 
+<span class='line'> 15</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 16</span> 	 * Event triggered when a value changes. Fired only on demand, that is, only if one or more key listeners
+<span class='line'> 17</span> 	 * are registered.
+<span class='line'> 18</span> 	 * @name Foundation.Storage.change
+<span class='line'> 19</span> 	 * @event
+<span class='line'> 20</span> 	 * @param {Object} e Event object
+<span class='line'> 21</span> 	 * @param {string} e.type Type of the event (currently only set is supported)
+<span class='line'> 22</span> 	 * @param {string} e.keySelector The selector query that matched the key. For example, if the key 'cat'
+<span class='line'> 23</span> 	 *								 has changed and the regular expression /(b|c)at/ matched, this parameter will contain
+<span class='line'> 24</span> 	 * 								 the string /(b|c)at/. You can use this string to re-create the matching regex.
+<span class='line'> 25</span> 	 * @param {string} e.key		 The key for which the event has occurred. In the example above, this will be 'cat'.
+<span class='line'> 26</span> 	 * @param {mixed}  e.value		 The new value.
+<span class='line'> 27</span> 	 */</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">	
+<span class='line'> 29</span> 	</span><span class="COMM">/**
+<span class='line'> 30</span> 	 * Gets one or more values safely.
+<span class='line'> 31</span> 	 * @param {mixed} key The key to remove. If string, the key will be removed, if present. You can
+<span class='line'> 32</span> 	 *					   provide a regex that will delete all the matching keys.
+<span class='line'> 33</span> 	 * @param {boolean} [includeKey=false] True to return an object with two properties: key (the key for this value)
+<span class='line'> 34</span> 	 *                  and value (the value).
+<span class='line'> 35</span> 	 * @return {mixed} If you provided a string key:
+<span class='line'> 36</span> 	 * 				&lt;ul>
+<span class='line'> 37</span> 	 *					&lt;li>If the key is present, the value will be returned.&lt;/li>
+<span class='line'> 38</span> 	 *					&lt;li>If the key is present and includeKey is true, an object will be returned (see the description
+<span class='line'> 39</span> 	 *                  for includeKey).&lt;/li>
+<span class='line'> 40</span> 	 *					&lt;li>If the key is not present, null will be returned.&lt;/li>
+<span class='line'> 41</span> 	 *				&lt;/ul>
+<span class='line'> 42</span> 	 *				If you provided a regex:
+<span class='line'> 43</span> 	 * 				&lt;ul>
+<span class='line'> 44</span> 	 *					&lt;li>If the regex matches one or more keys, an array of values will be returned.&lt;/li>
+<span class='line'> 45</span> 	 *					&lt;li>If the regex matches one or more keys and includeKey is true, an array of objects
+<span class='line'> 46</span> 	 *                  will be returned (see the description for includeKey).&lt;/li>
+<span class='line'> 47</span> 	 *					&lt;li>If the regex doesn't match any key, an empty array will be returned.&lt;/li>
+<span class='line'> 48</span> 	 *				&lt;/ul>
+<span class='line'> 49</span> 	 */</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">	</span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">includeKey</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.isRegExp</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">o</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">key.test</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">includeKey</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">						</span><span class="NAME">o.push</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">key</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">					</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">						</span><span class="NAME">o.push</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">						
+<span class='line'> 60</span> 					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">			
+<span class='line'> 64</span> 			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">o</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">includeKey</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">key</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">				
+<span class='line'> 71</span> 			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">	
+<span class='line'> 76</span> 	</span><span class="COMM">/**
+<span class='line'> 77</span> 	 * Checks if the specified value is a regular expression (by checking its constructor).
+<span class='line'> 78</span> 	 * @private
+<span class='line'> 79</span> 	 * @param {mixed} key	The value to check
+<span class='line'> 80</span> 	 * @return {boolean} true If the value is a regular expression.
+<span class='line'> 81</span> 	 */</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">	</span><span class="NAME">isRegExp</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">key.constructor.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">match</span><span class="PUNC">(</span><span class="REGX">/^function RegExp\(\)/</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">	
+<span class='line'> 84</span> 	</span><span class="COMM">/**
+<span class='line'> 85</span> 	 * Sets a value.
+<span class='line'> 86</span> 	 * @param {string} key The key
+<span class='line'> 87</span> 	 * @param {mixed} value The value
+<span class='line'> 88</span> 	 */</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">	</span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">		</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">		
+<span class='line'> 92</span> 		</span><span class="NAME">Foundation.Storage.checkWatchKey</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">		
+<span class='line'> 94</span> 		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">		
+<span class='line'> 97</span> 	</span><span class="COMM">/**
+<span class='line'> 98</span> 	 *	@param {mixed} key The key to remove. If string, the key will be removed, if present. You can
+<span class='line'> 99</span> 	 *					   provide a regex that will delete all the matching keys.
+<span class='line'>100</span> 	 */</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">	</span><span class="NAME">remove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.isRegExp</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">key.test</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">					</span><span class="NAME">Foundation.Storage.checkWatchKey</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					
+<span class='line'>106</span> 					</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">			</span><span class="NAME">Foundation.Storage.checkWatchKey</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">			</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._data</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">	
+<span class='line'>114</span> 	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>115</span> </span><span class="WHIT">	
 <span class='line'>116</span> 	</span><span class="COMM">/**
-<span class='line'>117</span> 	 * Stop watching one or more keys.
-<span class='line'>118</span> 	 * @param {mixed} key	The key to watch. It can be a regex or a string.
-<span class='line'>119</span> 	 */</span><span class="WHIT">
-<span class='line'>120</span> </span><span class="WHIT">	</span><span class="NAME">unwatch</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>121</span> </span><span class="WHIT">		</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>122</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>123</span> </span><span class="WHIT">	
-<span class='line'>124</span> 	</span><span class="NAME">checkWatchKey</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>125</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>126</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'regex'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>127</span> </span><span class="WHIT">				</span><span class="NAME">regex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RegExp</span><span class="PUNC">(</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>128</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">regex.test</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>129</span> </span><span class="WHIT">					</span><span class="NAME">Ti.App.fireEvent</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.Event.CHANGE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">type</span><span class="PUNC">:</span><span class="STRN">'set'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">keySelector</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">key</span><span class="PUNC">:</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					
-<span class='line'>130</span> 				</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>131</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">			
-<span class='line'>132</span> 			</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>133</span> </span><span class="WHIT">				</span><span class="NAME">Ti.App.fireEvent</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.Event.CHANGE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">type</span><span class="PUNC">:</span><span class="STRN">'set'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">keySelector</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">key</span><span class="PUNC">:</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					
-<span class='line'>134</span> 			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>135</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>136</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>137</span> </span><span class="PUNC">}</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'>117</span> 	 * Resets the storage.
+<span class='line'>118</span> 	 */</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">	</span><span class="NAME">reset</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">		</span><span class="NAME">Foundation.Storage._data</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">	
+<span class='line'>123</span> 	</span><span class="COMM">/**
+<span class='line'>124</span> 	 * Start watching one or more keys for any change. Use this method when you want your application to be
+<span class='line'>125</span> 	 * notifies when a value is added, changed or removed (via Ti.App.addEventListener).
+<span class='line'>126</span> 	 * @param {mixed} key	The key to watch. It can be a regex or a string.
+<span class='line'>127</span> 	 */</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">	</span><span class="NAME">watch</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">		</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.isRegExp</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="STRN">'regex'</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">	
+<span class='line'>132</span> 	</span><span class="COMM">/**
+<span class='line'>133</span> 	 * Stop watching one or more keys.
+<span class='line'>134</span> 	 * @param {mixed} key	The key to watch. It can be a regex or a string.
+<span class='line'>135</span> 	 */</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">	</span><span class="NAME">unwatch</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">		</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">	
+<span class='line'>140</span> 	</span><span class="COMM">/**
+<span class='line'>141</span> 	 * Checks if any key listener is registered against the specified key.
+<span class='line'>142</span> 	 *
+<span class='line'>143</span> 	 * First of all, this method checks if the key dictionary contains a matching key (either a regex or a string).
+<span class='line'>144</span> 	 * A regex is syntesized by using its string value (as we can't store regex references properly). If any matching
+<span class='line'>145</span> 	 * key is found, this method will trigger an event.
+<span class='line'>146</span> 	 * @private
+<span class='line'>147</span> 	 * @param {mixed} key The value key (either a regex or a string)
+<span class='line'>148</span> 	 * @param {mixed} value The value for the specified key. It will be passed along with the event data.
+<span class='line'>149</span> 	 */</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">	</span><span class="NAME">checkWatchKey</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'regex'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">				</span><span class="NAME">regex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RegExp</span><span class="PUNC">(</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">regex.test</span><span class="PUNC">(</span><span class="NAME">key</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">					</span><span class="NAME">Ti.App.fireEvent</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.Event.CHANGE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">type</span><span class="PUNC">:</span><span class="STRN">'set'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">keySelector</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">key</span><span class="PUNC">:</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					
+<span class='line'>156</span> 				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">			
+<span class='line'>158</span> 			</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage._watch</span><span class="PUNC">[</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">				</span><span class="NAME">Ti.App.fireEvent</span><span class="PUNC">(</span><span class="NAME">Foundation.Storage.Event.CHANGE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">type</span><span class="PUNC">:</span><span class="STRN">'set'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">keySelector</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">key</span><span class="PUNC">:</span><span class="NAME">key.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					
+<span class='line'>160</span> 			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="PUNC">}</span><span class="PUNC">;</span></pre></body></html>

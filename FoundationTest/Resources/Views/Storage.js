@@ -233,14 +233,49 @@
 		win.add(closeButton);
 		win.open();
 	},
+
+	storageRemoveTest: function() {
+		
+		this.app.foundation.Storage.set('value', 'value');
+		this.app.foundation.Storage.remove('value');
+		var nullValue = this.app.foundation.Storage.get('value');
+		alert(nullValue === null ? 'passed' : 'failed');		
+	},
+
+	
+	storageResetTest: function() {
+		
+		this.app.foundation.Storage.set('value', 'value');
+		this.app.foundation.Storage.reset();
+		var nullValue = this.app.foundation.Storage.get('value');
+		alert(nullValue === null ? 'passed' : 'failed');		
+	},
+
+	persistentStorageRemoveTest: function() {
+		this.app.foundation.PersistentStorage.set('value', 'value');
+		this.app.foundation.PersistentStorage.remove('value');
+		var nullValue = this.app.foundation.PersistentStorage.get('value');
+		alert(nullValue === null ? 'passed' : 'failed');				
+	},
+	
+	persistentStorageResetTest: function() {
+		this.app.foundation.PersistentStorage.set('value', 'value');
+		this.app.foundation.PersistentStorage.reset();
+		var nullValue = this.app.foundation.PersistentStorage.get('value');
+		alert(nullValue === null ? 'passed' : 'failed');				
+	},
 	
 	init: function() {
 		
 		var data = [
-			{title: 'Runtime Storage (store values)', fn: 'storageSetTest', hasChild: true},
-			{title: 'Runtime Storage (retrieve values)', fn: 'storageGetTest', hasChild: true},
-			{title: 'Persistent Storage (store values)', fn: 'persistentStorageSetTest', hasChild: true},
-			{title: 'Persistent Storage (retrieve values)', fn: 'persistentStorageGetTest', hasChild: true}
+			{title: 'Runtime Storage (store)', fn: 'storageSetTest', hasChild: true},
+			{title: 'Runtime Storage (retrieve)', fn: 'storageGetTest', hasChild: true},
+			{title: 'Runtime Storage (remove)', fn: 'storageRemoveTest', hasChild: true},
+			{title: 'Runtime Storage (reset)', fn: 'storageResetTest', hasChild: true},
+			{title: 'Persistent Storage (store)', fn: 'persistentStorageSetTest', hasChild: true},
+			{title: 'Persistent Storage (retrieve)', fn: 'persistentStorageGetTest', hasChild: true},
+			{title: 'Persistent Storage (remove)', fn: 'persistentStorageRemoveTest', hasChild: true},
+			{title: 'Persistent Storage (reset)', fn: 'persistentStorageResetTest', hasChild: true}
 		];
 		
 		var table = Ti.UI.createTableView({

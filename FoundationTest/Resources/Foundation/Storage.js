@@ -11,6 +11,20 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 		 */
 		CHANGE: 'Foundation.Storage.change'
 	},
+
+	/**
+	 * Event triggered when a value changes. Fired only on demand, that is, only if one or more key listeners
+	 * are registered.
+	 * @name Foundation.Storage.change
+	 * @event
+	 * @param {Object} e Event object
+	 * @param {string} e.type Type of the event (currently only set is supported)
+	 * @param {string} e.keySelector The selector query that matched the key. For example, if the key 'cat'
+	 *								 has changed and the regular expression /(b|c)at/ matched, this parameter will contain
+	 * 								 the string /(b|c)at/. You can use this string to re-create the matching regex.
+	 * @param {string} e.key		 The key for which the event has occurred. In the example above, this will be 'cat'.
+	 * @param {mixed}  e.value		 The new value.
+	 */
 	
 	/**
 	 * Gets one or more values safely.
@@ -59,6 +73,12 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 		}
 	},
 	
+	/**
+	 * Checks if the specified value is a regular expression (by checking its constructor).
+	 * @private
+	 * @param {mixed} key	The value to check
+	 * @return {boolean} true If the value is a regular expression.
+	 */
 	isRegExp: function(key) { return key.constructor.toString().match(/^function RegExp\(\)/); },
 	
 	/**
@@ -82,18 +102,14 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 		if(Foundation.Storage.isRegExp(key)) {
 			for(var i in Foundation.Storage._data) {
 				if(key.test(i)) {
-					delete Foundation.Storage._data[i];
-					
 					Foundation.Storage.checkWatchKey(key, null);					
+					delete Foundation.Storage._data[i];
 				}
 			}
 		}
 		else if(Foundation.Storage._data[key]) {
-			value = Foundation.Storage._data[key];
+			Foundation.Storage.checkWatchKey(key, null);
 			delete Foundation.Storage._data[key];
-			
-			Foundation.Storage.checkWatchKey();
-			
 		}	
 	},
 	
@@ -121,6 +137,16 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 		delete Foundation.Storage._watch[key.toString()];
 	},
 	
+	/**
+	 * Checks if any key listener is registered against the specified key.
+	 *
+	 * First of all, this method checks if the key dictionary contains a matching key (either a regex or a string).
+	 * A regex is syntesized by using its string value (as we can't store regex references properly). If any matching
+	 * key is found, this method will trigger an event.
+	 * @private
+	 * @param {mixed} key The value key (either a regex or a string)
+	 * @param {mixed} value The value for the specified key. It will be passed along with the event data.
+	 */
 	checkWatchKey: function(key, value) {
 		if(Foundation.Storage._watch[key.toString()]) {
 			if(Foundation.Storage._watch[key.toString()] == 'regex') {

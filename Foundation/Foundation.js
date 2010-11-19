@@ -69,11 +69,11 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * @param {string} name	The window name. It will be used for internal reference, as well to
 	 *						fetch the file that contains the view's code. To comply to Foundation's naming
 	 * 						conventions, any space will be trimmed. So, if your window title is “Apples and 
-	 *						Oranges”, this method will fetch the file ApplesAndOranges.js.
+	 *						oranges”, this method will fetch the file ApplesAndOranges.js (with a space-to-camelCase conversion).
 	 * @param {object} params The configuration options, same as Titanium's parameters.
 	 * @param {boolean} [params.viewless] true to create a window without loading its relative file
-	 * @param {string} [params.file] the file name without path (must be under Resources/Views) that contains
-     *								 the code for this window
+	 * @param {string} [params.file] the file name without path (must be under Resources/Views, Resources/iphone/Android and/or
+     *								 Resources/iphone/Views) that contains the code for this window
 	 * @return {Ti.UI.Window} A Window instance
 	 */
 	createWindow: function(name, params) {
@@ -83,7 +83,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		var filename = '';
 		
 		if(!params.viewless) {
-			filename = (params.file || name.replace(/ /g, '') + '.js');
+			filename = (params.file || Foundation.UI.toCamelCase(name) + '.js');
 
 			var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/' + Foundation.platformDir + '/Views/' + filename);
 			if(f.exists()) {
@@ -118,6 +118,16 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		Foundation.Windows[name].f = Foundation.Windows[name].foundation = Foundation;
 
 		return Foundation.Windows[name];
+	},
+	
+	/**
+	 * Returns a CamelCase string
+	 * @private
+	 * @param {string} s	Input string
+	 * @return {string} 	Output string
+	 */
+	toCamelCase: function(s){
+		return s.replace(/(\ [a-z])/ig, function($1){return $1.toUpperCase().replace(' ','');});
 	},
 	
 	/**
@@ -183,11 +193,14 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	
 	/**
 	 * Creates a new tab and appends it to the tab group. For the moment only one tab group is allowed in a
-	 * Foundation application, so it will be automatically created if needed.
+	 * Foundation application, so it will be automatically created if needed.<br/><br/>
 	 *
+	 * Foundation will use the window name to get the right view and apply the tab icon so, if you name a window
+	 * “Apples and oranges”, Foundation will look for ApplesAndOranges.js and ApplesAndOranges.png.
 	 * @param {string} name	The name to assign to the window. It will be used for internal reference and to
 	 *						fetch the file that contains the views's code.
 	 * @param {object} [tabOptions] A dictionary of properties as Ti.UI.createTab would expect
+	 * @param {string} [tabOptions.icon] Path to the tab's icon, in case its name does not match the window's name
 	 * @param {object} [winOptions] A dictionary of properties as Foundation.UI.createWindow would expect
 	 * @return {Ti.UI.Tab} The tab
 	 */
@@ -211,14 +224,19 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 			title: name,
 			backgroundColor: '#444'
 		};
-
-		var icon = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/Images/' + name.replace(/ /g, '') + '.png');
-
-		if(icon.exists()) {
-			options.icon = icon.nativePath;
+		
+		if(tabOptions.icon) {
+			options.icon = tabOptions.icon;
 		}
 		else {
-			options.icon = Foundation.prefix + 'Images/FoundationGenericIcon.png';
+			var icon = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/Images/' + Foundation.UI.toCamelCase(name) + '.png');
+
+			if(icon.exists()) {
+				options.icon = icon.nativePath;
+			}
+			else {
+				options.icon = Foundation.prefix + 'Images/FoundationGenericIcon.png';
+			}			
 		}
 
 		tabOptions = Foundation.augment(options, tabOptions);

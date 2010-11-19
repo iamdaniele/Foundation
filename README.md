@@ -23,6 +23,7 @@ What's coming
 *	 Enhance what a platform-specific view can do for you.
 *    The ability to package a Universal App (that is, a single build that fits both iPhone and iPad).
 *    Database API.
+*	 API documentation (it's already there, it's just not online)
 
 License
 =======
