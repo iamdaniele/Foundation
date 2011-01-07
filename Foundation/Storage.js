@@ -33,7 +33,7 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 	 *					   provide a regex that will delete all the matching keys.
 	 * @param {boolean} [includeKey=false] True to return an object with two properties: key (the key for this value)
 	 *                  and value (the value).
-	 * @return {mixed} If you provided a string key:
+	 * @returns {mixed} If you provided a string key:
 	 * 				<ul>
 	 *					<li>If the key is present, the value will be returned.</li>
 	 *					<li>If the key is present and includeKey is true, an object will be returned (see the description
@@ -78,7 +78,7 @@ Foundation.Storage = /** @lends Foundation.Storage# */{
 	 * Checks if the specified value is a regular expression (by checking its constructor).
 	 * @private
 	 * @param {mixed} key	The value to check
-	 * @return {boolean} true If the value is a regular expression.
+	 * @returns {boolean} true If the value is a regular expression.
 	 */
 	isRegExp: function(key) { return key.constructor.toString().match(/^function RegExp\(\)/); },
 	

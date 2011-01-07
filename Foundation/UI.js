@@ -1,56 +1,4 @@
 /**
- * Microframework to make a Titanium developer life's easier.
- * @class
- * @namespace
- */
-var Foundation = /** @lends Foundation# */ {
-	Windows: {},
-	Tabs: {},
-	currentTabGroup: null,
-	tabGroupCounter: 0,
-	TabGroups: {},
-	Platform:{
-		IOS: 'iPhone OS',
-		ANDROID: 'android',
-		IOS_DIR: 'iphone',
-		ANDROID_DIR: 'android',
-		isIOS: function() {return Ti.Platform.name == Foundation.Platform.IOS; },
-		isAndroid: function() {return Ti.Platform.name == Foundation.Platform.ANDROID; },
-		isSimulator: function() { return (Titanium.Platform.model == 'google_sdk' || Titanium.Platform.model == 'Simulator'); }
-	}
-};
-
-Foundation.platformDir = Foundation.Platform.isIOS() ? Foundation.Platform.IOS_DIR : Foundation.Platform.ANDROID_DIR;
-Foundation.prefix = Foundation.Platform.isIOS() ? '' : '/';
-
-/**
- * Extends objects (literals). Useful where you need to add properties to an object or to override
- * properties or methods. This method is not recursive (i.e. only copies plain objects or references)
- * and does not overwrite its arguments.
- *
- * @param {Object} [object] The first object
- * @param {Object[]} [...] Optional objects
- * @return {Object} The augmented object.
- */
-Foundation.augment = function() {
-	var base = {};
-	for(var i = 0; i < arguments.length; i++) {
-	
-		src = arguments[i];
-
-		if(typeof src == 'object' && src !== null) {
-
-			for(var key in src) {
-				base[key] = src[key];
-			}
-	
-		}		
-	}
-	
-	return base;
-};
-
-/**
  * Provides interaction with tabs and windows.
  * @class
  */
@@ -58,6 +6,31 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	
 	windowConfig: {},
 	windowTemplate: {},
+	Event: /** @lends Foundation.UI.Event# */ {
+		/**
+		 * Event name for when an Android menu is available and ready to be displayed to the user.
+		 * @constant
+		 */
+		MENU_AVAILABLE: 'Foundation.UI.menuavailable'
+	},
+	menu: null,
+	menuButtons: [],
+	/** 
+	 * Path to a generic icon that can be used as a placeholder for buttons and tabs. 
+	 * @constant
+	 */
+	GENERIC_ICON: Foundation.prefix + 'Images/FoundationGenericIcon.png',
+
+	/**
+	 * @name Foundation.UI.menuavailable
+	 * Event triggered when an Android menu is available and ready to be displayed to the user.
+	 * 
+	 * As the menu creation is asynchronous, this event will be fired after Foundation.UI.createMenu configures
+	 * the menu and a reference to the activity's menu is saved, so that you can then get it and perform futher
+	 * operations. This event is fired on iOS too; this should help you to keep the same code pattern across the
+	 * two platforms.
+	 * @event
+	 */
 	
 	/**
 	 * Creates a new window as you would expect Titanium to do, but appends Foundation and the app namespace
@@ -74,7 +47,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * @param {boolean} [params.viewless] true to create a window without loading its relative file
 	 * @param {string} [params.file] the file name without path (must be under Resources/Views, Resources/iphone/Android and/or
      *								 Resources/iphone/Views) that contains the code for this window
-	 * @return {Ti.UI.Window} A Window instance
+	 * @returns {Ti.UI.Window} A Window instance
 	 */
 	createWindow: function(name, params) {
 		
@@ -124,7 +97,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * Returns a CamelCase string
 	 * @private
 	 * @param {string} s	Input string
-	 * @return {string} 	Output string
+	 * @returns {string} 	Output string
 	 */
 	toCamelCase: function(s){
 		return s.replace(/(\ [a-z])/ig, function($1){return $1.toUpperCase().replace(' ','');});
@@ -134,7 +107,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * Returns the specified window, if exists.
 	 * @param {string} name	The window name.
 	 * @param {boolean} [withConfig=false] to return a dictionary with the window's current parameters.
-	 * @return {mixed} a Ti.UI.Window object or, if withConfig set to true, a dictionary with the
+	 * @returns {mixed} a Ti.UI.Window object or, if withConfig set to true, a dictionary with the
 	 * 					properties win (the window instance) and config (the window configuration).
 	 */
 	getWindow: function(name, withConfig) {
@@ -148,7 +121,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	
 	/**
 	 * Returns the current window template, if set.
-	 * @return {object} The window template. An empty object literal will be returned if no template is set.
+	 * @returns {object} The window template. An empty object literal will be returned if no template is set.
 	 */
 	getWindowTemplate: function() { return Foundation.UI.windowTemplate; },
 
@@ -179,7 +152,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * @param {object} [windowOptions] A dictionary of properties as Ti.UI.createWindow would expect
 	 * @param {object} [options] A dictionary of properties as Ti.UI.TabbedBar or Ti.UI.iPhone.NavigationGroup
 	 * 							 would expect.
-	 * @return {object} The window opened
+	 * @returns {object} The window opened
 	 */
 	openWindow: function(name, context, windowOptions, options) {
 		
@@ -204,7 +177,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * @param {object} [tabOptions] A dictionary of properties as Ti.UI.createTab would expect
 	 * @param {string} [tabOptions.icon] Path to the tab's icon, in case its name does not match the window's name
 	 * @param {object} [winOptions] A dictionary of properties as Foundation.UI.createWindow would expect
-	 * @return {Ti.UI.Tab} The tab
+	 * @returns {Ti.UI.Tab} The tab
 	 */
 	createTab: function(name, tabOptions, winOptions) {
 		
@@ -255,7 +228,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	/**
 	 * Return the specifies tab group.
 	 * @param {string} [tabGroupId] The tab group identifier. Leave empty to return the current active tabgroup.
-	 * @return {Ti.UI.TabGroup} The current TabGroup or null of the specified tabgroup is not present.
+	 * @returns {Ti.UI.TabGroup} The current TabGroup or null of the specified tabgroup is not present.
 	 */
 	tabGroup: function(tabGroupId) {
 		tabGroupId = tabGroupId || Foundation.currentTabGroup;
@@ -303,23 +276,94 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 		}
 		
 		return Foundation.TabGroups[tabGroupId];
-	}
-};
-
-Ti.include(Foundation.prefix + 'Foundation/Request.js');
-Ti.include(Foundation.prefix + 'Foundation/Storage.js');	
-Ti.include(Foundation.prefix + 'Foundation/PersistentStorage.js');	
-
-/**
- * @namespace Your app's namespace. Extend this object to have its properties and methods referenced across all
- * the execution contexts. The namespace is prefilled with the foundation namespace, so you can avail
- * it from within your view.
- * This namespace will be available as a window property, which means it will be accessible from Ti.UI.currentWindow.app.
- * 
- */
-var app = {
+	},
+	
 	/**
-	 * Reference to Foundation
+	 * Returns the menu for the current activity (for Android), or the last created menu (for iOS)
+	 * @returns	{mixed}	A Menu object for Android; a Ti.UI.optionDialog for iOS; null in case no menu was prepared
 	 */
-	foundation: Foundation
+	getMenu: function() { return Foundation.UI.menu },
+
+	/**
+	 * Creates a menu. For Android, this method will create a native menu; for iOS, this method wraps Ti.UI.optionDialog.
+	 * The underlying rationale behind this method is to wrap common code so you can hook the same functionalities to
+	 * different UI controls. You may for instance use the Menu button on an Android device and a tool button on iOS
+	 * while using the same code base.
+	 * @param {array} items	An array of object. Each item represent the configuration for a button.
+	 * @param {string} items.title The button's title
+	 * @param {string} items.image Path to the button's icon
+	 * @param {string} [items.order] The button's order. The lower the number, the higher the order is (i.e. set 1 to bring
+	 *								 the button in the first position).
+	 * @param {boolean} [items.enabled] To enable or disable the button
+	 * @returns {mixed} null on Android, Ti.UI.optionDialog for iOS
+	 */
+	createMenu: function(items) {
+
+		if(Foundation.Platform.isAndroid()) {
+			var activity = Ti.Android.currentActivity;
+
+			activity.onCreateOptionsMenu = function(e) {
+
+				Foundation.UI.menu = e.menu;
+
+				for(var i in items) {
+
+					var button = e.menu.add(items[i]);
+
+					if(items[i].image) {
+						button.setIcon(items[i].image);					
+					}
+
+					if(items[i].callback) {
+						button.addEventListener('click', items[i].callback);						
+					}
+					
+					if(typeof items[i].enabled != 'undefined' && items[i].enabled === false) {
+						button.enabled = false;
+					}
+
+					Foundation.UI.menuButtons.push(button);
+				}
+
+				Ti.App.fireEvent(Foundation.UI.Event.MENU_AVAILABLE);
+				
+				return null;
+			}				
+		}
+		else if(Foundation.Platform.isIOS()) {
+			var titles = [];
+			Foundation.UI.callbacks = [];
+
+			for(var i in items) {
+
+				// filter disabled items
+				if(typeof items[i].enabled != 'undefined' && items[i].enabled === false) {
+					continue;
+				}
+
+				titles.push(items[i].title);
+				Foundation.UI.callbacks.push(items[i].callback);
+			}
+
+			titles.push('Cancel');
+			
+			Foundation.UI.menu = Ti.UI.createOptionDialog({
+				options: titles,
+				cancel: titles.length - 1
+			});
+			
+			Ti.API.info('cancel: ' + (titles.length - 1));
+			
+			Foundation.UI.menu.addEventListener('click', function(e) {
+
+				if(e.index != e.cancel) {
+					Foundation.UI.callbacks[e.index]();
+				}
+			});
+
+			Ti.App.fireEvent(Foundation.UI.Event.MENU_AVAILABLE);
+			
+			return Foundation.UI.menu;
+		}
+	}
 };

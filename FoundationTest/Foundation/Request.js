@@ -35,7 +35,7 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 	 * @param	{String}	[options.jsonpCallbackParam] The callback parameter key.
 	 * @param	{Boolean|String} [options.jsonpCallback] True to use Foundation's internal callback (Foundation.Request.callback). You can provide a function name
 	 *									if you need a different callback. The function will be passed the response body as parameter.
-	 * @return {Object}					A proxy to Ti's HTTPClient. You should expect to use the same entry points as it.
+	 * @returns {Object}					A proxy to Ti's HTTPClient. You should expect to use the same entry points as it.
 	 */
 	json: function(url, type, options) {
 		

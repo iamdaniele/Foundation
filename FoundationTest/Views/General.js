@@ -69,6 +69,11 @@
 		this.app.foundation.UI.openWindow('Platform Specific View', Ti.UI.currentTab);
 	},
 	
+	createMenuTest: function() {
+		
+		this.app.foundation.UI.openWindow('Menu', Ti.UI.currentTab);
+	},
+	
 	init: function() {
 		
 		var data = [
@@ -77,7 +82,8 @@
 			{title: 'Create Tab', fn: 'createTabTest', hasChild: true},
 			{title: 'Set Window Template', fn: 'windowTemplateTest', hasChild: true},
 			{title: 'Change Window Template', fn: 'changeWindowTemplateTest', hasChild: true},
-			{title: 'Platform Specific View', fn: 'platformSpecificViewTest', hasChild: true}
+			{title: 'Platform Specific View', fn: 'platformSpecificViewTest', hasChild: true},
+			{title: 'Create Menu', fn: 'createMenuTest', hasChild: true}
 		];
 		
 		var table = Ti.UI.createTableView({

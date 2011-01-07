@@ -36,7 +36,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	 *					   provide a regex that will delete all the matching keys.
 	 * @param {boolean} [includeKey=false] True to return an object with two properties: key (the key for this value)
 	 *                  and value (the value).
-	 * @return {mixed} If you provided a string key:
+	 * @returns {mixed} If you provided a string key:
 	 * 				<ul>
 	 *					<li>If the key is present, the value will be returned.</li>
 	 *					<li>If the key is present and includeKey is true, an object will be returned (see the description
@@ -86,7 +86,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	 * Retrieves the value for the specified key in the correct format.
 	 * @private
 	 * @param {string} key	The dictionary's key
-	 * @return {mixed}	The return value or null if no value is found.
+	 * @returns {mixed}	The return value or null if no value is found.
 	 */
 	_get: function(key) {
 		var value = null;
@@ -162,7 +162,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 	 * Determines the correct type of the specified value.
 	 * @private
 	 * @param {mixed} value The value to check
-	 * @return {string} A string containing the value type (Bool, String, object, List, Double, Int).
+	 * @returns {string} A string containing the value type (Bool, String, object, List, Double, Int).
 	 * 				    The name format allows other method to use reflection (Ti.App.Properties.getXXXX)
 	 */
 	typeOf: function(value) {
