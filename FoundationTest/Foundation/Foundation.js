@@ -50,6 +50,17 @@ Foundation.augment = function() {
 	return base;
 };
 
+/**
+ * Returns if the specified value is an array or not. This methods sniffes the value's constructor in order
+ * to get an accurate results, since Titanium 1.5.0 does not allow developers to rely on the instanceof
+ * operator.
+ * @param {mixed} value The value to check
+ * @returns {boolean} true if the value is an array, false otherwise
+ */
+Foundation.isArray = function(value) {
+	return value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null;
+}
+
 Ti.include(Foundation.prefix + 'Foundation/UI.js');
 Ti.include(Foundation.prefix + 'Foundation/Request.js');
 Ti.include(Foundation.prefix + 'Foundation/Storage.js');	

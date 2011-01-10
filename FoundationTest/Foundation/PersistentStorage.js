@@ -176,8 +176,7 @@ Foundation.PersistentStorage = /** @lends Foundation.PersistentStorage# */{
 				type = 'String';
 			break;
 			case 'object':
-				// value instanceof Array does not report the correct result in Titanium.
-				if(value.constructor && value.constructor.toString().match(/^function Array\(\)/) != null) {
+				if(Foundation.isArray(value)) {
 					type = 'List';
 				}
 				else {

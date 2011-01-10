@@ -1,6 +1,7 @@
 ({
 	win: Ti.UI.currentWindow,
 	app: Ti.UI.currentWindow.app,
+	flickrApiUrl: 'http://api.flickr.com/services/feeds/photos_public.gne',
 	
 	init: function() {
 
@@ -38,7 +39,7 @@
 		}
 		
 		req.onerror = function() {
-			self.win.setToolbar(null, {animated: true});
+			loading.hide();
 			Ti.API.error('error ' + this.status + ': ' + this.responseText);
 			alert('An error occurred. See the logs for more information.');
 		}

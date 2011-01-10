@@ -295,6 +295,8 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 * @param {string} [items.order] The button's order. The lower the number, the higher the order is (i.e. set 1 to bring
 	 *								 the button in the first position).
 	 * @param {boolean} [items.enabled] To enable or disable the button
+	 * @param {string|array} [items.platforms] The platform(s) that should display the item. Useful to hide a funcionality
+	 *										   from a platform while keeping the same menu structure.
 	 * @returns {mixed} null on Android, Ti.UI.optionDialog for iOS
 	 */
 	createMenu: function(items) {
@@ -307,6 +309,15 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 				Foundation.UI.menu = e.menu;
 
 				for(var i in items) {
+					
+					if(items[i].platforms) {
+						if(Foundation.isArray(items[i].platforms) && items[i].platforms.indexOf(Foundation.Platform.ANDROID) == -1) {
+							continue;
+						}
+						else if(items[i].platforms != Foundation.Platform.ANDROID) {
+							continue;
+						}
+					}
 
 					var button = e.menu.add(items[i]);
 
@@ -340,6 +351,14 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 				if(typeof items[i].enabled != 'undefined' && items[i].enabled === false) {
 					continue;
 				}
+				if(items[i].platforms) {
+					if(Foundation.isArray(items[i].platforms) && items[i].platforms.indexOf(Foundation.Platform.IOS) == -1) {
+						continue;
+					}
+					else if(!Foundation.isArray(items[i].platforms) && items[i].platforms != Foundation.Platform.IOS) {
+						continue;
+					}
+				}
 
 				titles.push(items[i].title);
 				Foundation.UI.callbacks.push(items[i].callback);
@@ -356,7 +375,7 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 			
 			Foundation.UI.menu.addEventListener('click', function(e) {
 
-				if(e.index != e.cancel) {
+				if(e.index != e.cancel && Foundation.UI.callbacks[e.index]) {
 					Foundation.UI.callbacks[e.index]();
 				}
 			});

@@ -59,7 +59,7 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 		type = type || 'GET';
 		
 		var req = Ti.Network.createHTTPClient();
-		
+
 		req.open(type, url + (jsonp != '' ? '?' : '') + jsonp);
 
 		if(options.authentication) {
@@ -118,7 +118,6 @@ Foundation.Request = /** @lends Foundation.Request# */ {
 			// delegate events
 			req.onerror = function() { self.onerror.apply(this, arguments); };
 			req.onload = function() {
-
 				// responseJSON will be available in the function body and hopefully should
 				// contain the response body in JSON format ready to be used
 				try {
