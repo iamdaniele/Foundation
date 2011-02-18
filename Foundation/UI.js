@@ -45,25 +45,52 @@ Foundation.UI = /** @lends Foundation.UI# */ {
 	 *						oranges”, this method will fetch the file ApplesAndOranges.js (with a space-to-camelCase conversion).
 	 * @param {object} params The configuration options, same as Titanium's parameters.
 	 * @param {boolean} [params.viewless] true to create a window without loading its relative file
-	 * @param {string} [params.file] the file name without path (must be under Resources/Views, Resources/iphone/Android and/or
-     *								 Resources/iphone/Views) that contains the code for this window
+	 * @param {string} [params.file] The file name without path (must be under Resources/Views, Resources/iphone/Android and/or
+     *								 Resources/iphone/Views) that contains the code for this window. You can also specify an URL
+	 *								 to remotely download a Titanium script (currently only supports HTTP and HTTPS).
+	 * @param {string} [params.requestMethod='GET'] The request method (if you are downloading a remote script)
+	 * @param {object} [params.requestParams] A dictionary of parameters for the remote script request
+	 * @param {number} [params.requestTimeout=10000] Timeout in milliseconds for the remote script request
 	 * @returns {Ti.UI.Window} A Window instance
 	 */
 	createWindow: function(name, params) {
 		
 		params = params || {};
+		params.requestMethod = ('' + params.requestMethod).toUpperCase() || 'GET';
+		params.requestParams = params.requestParams || {};
+		params.requestTimeout = params.requestTimeout || 10000;
 		
 		var filename = '';
 		
 		if(!params.viewless) {
-			filename = (params.file || Foundation.UI.toCamelCase(name) + '.js');
+			var q = [];
+			if(params.file && params.file.match(/^http(s?)\:\/\//)) {
+				if(params.requestMethod.toUpperCase() == 'GET') {
+					
+					for(var i in params.requestParams) {
+						q.push(i + '=' + params.requestParams[i]);
+					}
+				}
 
-			var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/' + Foundation.platformDir + '/Views/' + filename);
-			if(f.exists()) {
+				var f = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, new Date().getTime() + '.js');
+				var r = Ti.Network.createHTTPClient();
+				r.open(params.requestMethod, params.file + (params.requestMethod == 'GET' && q.length > 0 ? '?' + q.join('&') : ''), false);
+				r.setTimeout(params.requestTimeout);
+				r.send((params.requestMethod == 'POST' ? params.requestParams : null));				
+
+				f.write(r.responseText);
 				filename = f.nativePath;
 			}
 			else {
-				filename = Foundation.prefix + 'Views/' + filename;
+				filename = (params.file || Foundation.UI.toCamelCase(name) + '.js');
+
+				var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + '/' + Foundation.platformDir + '/Views/' + filename);
+				if(f.exists()) {
+					filename = f.nativePath;
+				}
+				else {
+					filename = Foundation.prefix + 'Views/' + filename;
+				}				
 			}
 		}
 		

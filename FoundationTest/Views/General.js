@@ -13,6 +13,15 @@
 		var win = this.app.foundation.UI.createWindow('Window Test', {modal: true});
 		win.open();
 	},
+
+	remoteWindowTest: function() {
+
+		/* By default, createWindow creates a window using a file with the same name (except spaces) of your window title.
+		 * You can also specify a file parameter to either a local or remote Javascript.
+		 */		
+		var win = this.app.foundation.UI.createWindow('Remote Window Test', {modal: true, file: 'http://melonpielabs.com/foundation/windowTest.php'});
+		win.open();
+	},
 	
 	newViewlessWindowTest: function() {
 		var win = this.app.foundation.UI.createWindow('Viewless Window', {viewless: true, modal: true});		
@@ -77,7 +86,8 @@
 	init: function() {
 		
 		var data = [
-			{title: 'Window', fn: 'newWindowTest', fn: 'newWindowTest', hasChild: true},
+			{title: 'Window', fn: 'newWindowTest', hasChild: true},
+			{title: 'Remote Window', fn: 'remoteWindowTest', hasChild: true},
 			{title: 'Viewless window', fn: 'newViewlessWindowTest', hasChild: true},
 			{title: 'Create Tab', fn: 'createTabTest', hasChild: true},
 			{title: 'Set Window Template', fn: 'windowTemplateTest', hasChild: true},
